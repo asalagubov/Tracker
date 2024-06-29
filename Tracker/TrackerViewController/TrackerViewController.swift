@@ -7,11 +7,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class TrackerViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+    backGround()
   }
 
   private func backGround() {
