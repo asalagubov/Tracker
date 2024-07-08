@@ -9,6 +9,9 @@ import UIKit
 
 class TrackerViewController: UIViewController {
 
+  var categories: [TrackerCategory] = []
+  var completedTrackers: [TrackerRecord] = []
+
   override func viewDidLoad() {
     super.viewDidLoad()
     backGround()
