@@ -74,7 +74,7 @@ class TrackerViewController: UIViewController {
     let dateButton = UIBarButtonItem(title: currentDateString, style: .plain, target: nil, action: nil)
     dateButton.customView = datePicker
 
-    navigationItem.rightBarButtonItem = dateButton
+    navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
   }
 
   private func updateDateButtonTitle(date: Date) {
@@ -82,6 +82,10 @@ class TrackerViewController: UIViewController {
 
   @objc func plusButtonTapped() {
     print("PlusButtonTapped")
+    let newTrackerVC = NewTrackerViewController()
+    let navigationController = UINavigationController(rootViewController: newTrackerVC)
+    navigationController.modalPresentationStyle = .popover
+    present(navigationController, animated: true, completion: nil)
   }
   @objc func datePickerChanged() {
     print("CalendarTapped")

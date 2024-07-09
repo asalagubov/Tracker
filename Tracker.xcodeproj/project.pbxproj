@@ -20,6 +20,9 @@
 		0CCE47A62C3A9C180082CBC8 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47A52C3A9C180082CBC8 /* Tracker.swift */; };
 		0CCE47A82C3A9C230082CBC8 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47A72C3A9C230082CBC8 /* TrackerCategory.swift */; };
 		0CCE47AA2C3A9C2B0082CBC8 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47A92C3A9C2B0082CBC8 /* TrackerRecord.swift */; };
+		0CCE47AD2C3C794F0082CBC8 /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47AC2C3C794F0082CBC8 /* HabitViewController.swift */; };
+		0CCE47B02C3C7B5B0082CBC8 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47AF2C3C7B5B0082CBC8 /* EventViewController.swift */; };
+		0CCE47B32C3C7BC40082CBC8 /* NewTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47B22C3C7BC40082CBC8 /* NewTrackerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +60,9 @@
 		0CCE47A52C3A9C180082CBC8 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		0CCE47A72C3A9C230082CBC8 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		0CCE47A92C3A9C2B0082CBC8 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		0CCE47AC2C3C794F0082CBC8 /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
+		0CCE47AF2C3C7B5B0082CBC8 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
+		0CCE47B22C3C7BC40082CBC8 /* NewTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +142,9 @@
 				0C4B530B2C2F8C2100B4E90D /* TabBarController */,
 				0C4B530A2C2F8C1100B4E90D /* TrackerViewController */,
 				0C4B530F2C2F8CA500B4E90D /* StatisticsViewController */,
+				0CCE47AB2C3C79380082CBC8 /* HabitViewController */,
+				0CCE47AE2C3C7B500082CBC8 /* EventViewController */,
+				0CCE47B12C3C7BB80082CBC8 /* NewTrackerViewController */,
 				0CCE47A42C3A9BFE0082CBC8 /* Models */,
 				0CB9F0662C2F053400EB65FC /* Assets.xcassets */,
 				0CB9F0682C2F053400EB65FC /* LaunchScreen.storyboard */,
@@ -169,6 +178,30 @@
 				0CCE47A92C3A9C2B0082CBC8 /* TrackerRecord.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		0CCE47AB2C3C79380082CBC8 /* HabitViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0CCE47AC2C3C794F0082CBC8 /* HabitViewController.swift */,
+			);
+			path = HabitViewController;
+			sourceTree = "<group>";
+		};
+		0CCE47AE2C3C7B500082CBC8 /* EventViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0CCE47AF2C3C7B5B0082CBC8 /* EventViewController.swift */,
+			);
+			path = EventViewController;
+			sourceTree = "<group>";
+		};
+		0CCE47B12C3C7BB80082CBC8 /* NewTrackerViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0CCE47B22C3C7BC40082CBC8 /* NewTrackerViewController.swift */,
+			);
+			path = NewTrackerViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,11 +336,14 @@
 			files = (
 				0CCE47A62C3A9C180082CBC8 /* Tracker.swift in Sources */,
 				0CCE47AA2C3A9C2B0082CBC8 /* TrackerRecord.swift in Sources */,
+				0CCE47B32C3C7BC40082CBC8 /* NewTrackerViewController.swift in Sources */,
 				0CB9F0622C2F053300EB65FC /* TrackerViewController.swift in Sources */,
 				0C4B53112C2F8CC500B4E90D /* StatisticsViewController.swift in Sources */,
 				0C4B530D2C2F8C6500B4E90D /* TabBarController.swift in Sources */,
+				0CCE47B02C3C7B5B0082CBC8 /* EventViewController.swift in Sources */,
 				0CB9F05E2C2F053300EB65FC /* AppDelegate.swift in Sources */,
 				0CB9F0602C2F053300EB65FC /* SceneDelegate.swift in Sources */,
+				0CCE47AD2C3C794F0082CBC8 /* HabitViewController.swift in Sources */,
 				0CCE47A82C3A9C230082CBC8 /* TrackerCategory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
