@@ -111,6 +111,18 @@ class HabitViewController: UIViewController, UITableViewDelegate, UITableViewDat
     tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)).isActive = true
 
   }
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    let selectedItem = tableList[indexPath.row]
+    if selectedItem == "Категория" {
+      let categotyVC = CategoryViewController()
+      navigationController?.pushViewController(categotyVC, animated: true)
+    }
+    if selectedItem == "Расписание" {
+      let scheduleVC = ScheduleViewController()
+      navigationController?.pushViewController(scheduleVC, animated: true)
+    }
+  }
 
   @objc func cancel() {
     print("Cancel")

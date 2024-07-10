@@ -10,7 +10,7 @@ import UIKit
 class TrackerViewController: UIViewController {
 
   var categories: [TrackerCategory] = []
-  var completedTrackers: [TrackerRecord] = []
+  var completedTrackers: [TrackerRecorder] = []
 
   override func viewDidLoad() {
     super.viewDidLoad()

@@ -126,6 +126,15 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
   }
 
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    let selectedItem = tableList[indexPath.row]
+    if selectedItem == "Категория" {
+      let categotyVC = CategoryViewController()
+      navigationController?.pushViewController(categotyVC, animated: true)
+    }
+  }
+
   @objc func cancel() {
     print("Cancel")
     dismiss(animated: true)
