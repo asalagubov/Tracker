@@ -8,11 +8,30 @@
 import Foundation
 import UIKit
 
+enum Weekday: String {
+  case monday = "Пн"
+  case tuesday = "Вт"
+  case wednesday = "Ср"
+  case thursday = "Чт"
+  case friday = "Пт"
+  case saturday = "Cб"
+  case sunday = "Вск"
+}
+
+protocol SelectedScheduleDelegate: AnyObject {
+  func selectScheduleScreen(_ screen: ScheduleViewController, didSelectedDays schedule: [Weekday])
+}
+
 class ScheduleViewController: UIViewController {
 
-  let daysOfWeek = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+  weak var delegate: SelectedScheduleDelegate?
 
-  var selectedDays: [Bool] = [false, false, false, false, false, false, false]
+  let daysOfWeek : [Weekday] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+  let daysOfWeekUI = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+
+  var selectedDays: [Weekday] = []
+
+  let tableView = UITableView()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,24 +47,24 @@ class ScheduleViewController: UIViewController {
 
   private func setupCategoryView() {
     navigationItem.hidesBackButton = true
-
-    let tableView = UITableView()
     tableView.delegate = self
     tableView.dataSource = self
-    view.addSubview(tableView)
 
-    tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    tableView.register(WeekDaysSelectCell.self, forCellReuseIdentifier: "WeekDaysSelectCell")
     tableView.rowHeight = 75
-    let tableCount : CGFloat = CGFloat(selectedDays.count)
-    tableView.heightAnchor.constraint(equalToConstant: tableView.rowHeight * tableCount).isActive = true
+    let tableCount : CGFloat = CGFloat(daysOfWeekUI.count)
     tableView.allowsSelection = false
     tableView.layer.cornerRadius = 16
     tableView.isScrollEnabled = false
     tableView.translatesAutoresizingMaskIntoConstraints = false
 
+    view.addSubview(tableView)
+
     tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
+    tableView.heightAnchor.constraint(equalToConstant: tableView.rowHeight * CGFloat(daysOfWeek.count)).isActive = true
+
   }
 
   private func addButton() {
@@ -69,16 +88,10 @@ class ScheduleViewController: UIViewController {
     button.addTarget(self, action: #selector(doneButton), for: .touchUpInside)
   }
 
-  @objc func doneButton() {
+  @objc func doneButton(_ sender: UIButton) {
     print("Done")
-    dismiss(animated: true)
+    delegate?.selectScheduleScreen(self, didSelectedDays: self.selectedDays)
     navigationController?.popViewController(animated: true)
-  }
-
-  @objc func switchChanged(_ sender: UISwitch) {
-    let index = sender.tag
-    selectedDays[index] = sender.isOn
-    print("День \(selectedDays[index]) выбран: \(sender.isOn)")
   }
 }
 extension ScheduleViewController : UITableViewDelegate, UITableViewDataSource {
@@ -87,16 +100,23 @@ extension ScheduleViewController : UITableViewDelegate, UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-    cell.textLabel?.text = daysOfWeek[indexPath.row]
-
-    let switchView = UISwitch()
-    switchView.tag = indexPath.row
-    switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
-    switchView.onTintColor = .ypBlue
-    cell.accessoryView = switchView
-    cell.backgroundColor = .ypBackground
-
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeekDaysSelectCell", for: indexPath) as? WeekDaysSelectCell else {
+      return UITableViewCell()
+    }
+    cell.configureCell(daysOfWeekUI[indexPath.row], daysOfWeek[indexPath.row])
+    cell.delegate = self
     return cell
+  }
+}
+
+extension ScheduleViewController: WeekDaySender {
+  func weekDayAppend(_ weekDay: Weekday) {
+    selectedDays.append(weekDay)
+  }
+
+  func weekDayRemove(_ weekDay: Weekday) {
+    if let index = selectedDays.firstIndex(of: weekDay) {
+      selectedDays.remove(at: index)
+    }
   }
 }

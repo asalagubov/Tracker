@@ -8,11 +8,18 @@
 import Foundation
 import UIKit
 
-class EventViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class EventViewController: UIViewController {
 
   let tableList = ["Категория"]
+  let emojiList = ["🙂","😻","🌺","🐶","❤️","😇","😡","🥶","🤔","🙌","🍔","🥦","🏓","🥇","🎸","🏝","😪"]
+  let colorList: [UIColor] = [.cSelection1,.cSelection2,.cSelection3,.cSelection4,.cSelection5,.cSelection6,.cSelection7,.cSelection8,.cSelection9,.cSelection10,.cSelection11,.cSelection12,.cSelection13,.cSelection14,.cSelection15,.cSelection16,.cSelection17,.cSelection18]
   let textField = UITextField()
   let stackView = UIStackView()
+  let createButton = UIButton()
+  let tableView = UITableView()
+
+  private var enteredTrackerName: String?
+  private var selectedCategory : TrackerCategory?
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -87,7 +94,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
   }
 
   private func setupCreateButton() {
-    let createButton = UIButton()
     createButton.setTitle("Создать", for: .normal)
     createButton.layer.cornerRadius = 16
     createButton.layer.masksToBounds = true
@@ -108,13 +114,14 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
   }
 
   private func createTable() {
-    let tableView = UITableView()
     tableView.delegate = self
     tableView.dataSource = self
     tableView.layer.cornerRadius = 16
     tableView.rowHeight = 75
     tableView.backgroundColor = .ypBackground
     tableView.isScrollEnabled = false
+    tableView.delegate = self
+    tableView.dataSource = self
     tableView.translatesAutoresizingMaskIntoConstraints = false
 
     view.addSubview(tableView)
@@ -135,6 +142,14 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
   }
 
+  func checkCreateButtonValidation() {
+    if selectedCategory != nil && enteredTrackerName != nil {
+      createButton.isEnabled = true
+      createButton.backgroundColor = .ypBlack
+      createButton.setTitleColor(.ypWhite, for: .normal)
+    }
+  }
+
   @objc func cancel() {
     print("Cancel")
     dismiss(animated: true)
@@ -146,7 +161,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
   }
 }
 
-extension EventViewController {
+extension EventViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return tableList.count
   }
@@ -156,7 +171,15 @@ extension EventViewController {
     cell.textLabel?.text = tableList[indexPath.row]
     cell.accessoryType = .disclosureIndicator
     cell.backgroundColor = .ypBackground
+    cell.detailTextLabel?.text = selectedCategory?.title
     return cell
   }
+}
 
+extension EventViewController: CategoryViewControllerDelegate {
+  func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
+    selectedCategory = category
+    tableView.reloadData()
+    checkCreateButtonValidation()
+  }
 }

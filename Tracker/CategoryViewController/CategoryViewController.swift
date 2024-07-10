@@ -8,8 +8,13 @@
 import Foundation
 import UIKit
 
+protocol CategoryViewControllerDelegate: AnyObject {
+    func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
+}
 
 class CategoryViewController: UIViewController {
+
+  weak var delegate: CategoryViewControllerDelegate?
 
   override func viewDidLoad() {
     super.viewDidLoad()

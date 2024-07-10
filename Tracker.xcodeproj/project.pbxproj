@@ -26,6 +26,8 @@
 		0CCE47C02C3EC1930082CBC8 /* TrackerCaterogy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */; };
 		0CCE47C22C3EC1AB0082CBC8 /* TrackerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */; };
 		0CCE47C42C3EC71F0082CBC8 /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */; };
+		0CCE47C62C3ECCD10082CBC8 /* TrackerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C52C3ECCD10082CBC8 /* TrackerViewCell.swift */; };
+		0CCE47C82C3F09AE0082CBC8 /* WeekDaySender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +71,8 @@
 		0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCaterogy.swift; sourceTree = "<group>"; };
 		0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecorder.swift; sourceTree = "<group>"; };
 		0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
+		0CCE47C52C3ECCD10082CBC8 /* TrackerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewCell.swift; sourceTree = "<group>"; };
+		0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDaySender.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				0CB9F0612C2F053300EB65FC /* TrackerViewController.swift */,
+				0CCE47C52C3ECCD10082CBC8 /* TrackerViewCell.swift */,
 			);
 			path = TrackerViewController;
 			sourceTree = "<group>";
@@ -225,6 +230,7 @@
 				0CCE47BD2C3EC1710082CBC8 /* Tracker.swift */,
 				0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */,
 				0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */,
+				0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */,
 			);
 			name = Models;
 			path = ../Models;
@@ -367,7 +373,9 @@
 				0CCE47C22C3EC1AB0082CBC8 /* TrackerRecorder.swift in Sources */,
 				0C4B53112C2F8CC500B4E90D /* StatisticsViewController.swift in Sources */,
 				0C4B530D2C2F8C6500B4E90D /* TabBarController.swift in Sources */,
+				0CCE47C62C3ECCD10082CBC8 /* TrackerViewCell.swift in Sources */,
 				0CCE47BE2C3EC1710082CBC8 /* Tracker.swift in Sources */,
+				0CCE47C82C3F09AE0082CBC8 /* WeekDaySender.swift in Sources */,
 				0CCE47B02C3C7B5B0082CBC8 /* EventViewController.swift in Sources */,
 				0CB9F05E2C2F053300EB65FC /* AppDelegate.swift in Sources */,
 				0CB9F0602C2F053300EB65FC /* SceneDelegate.swift in Sources */,
