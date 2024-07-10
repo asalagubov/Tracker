@@ -50,7 +50,7 @@ class CategoryViewController: UIViewController {
     image.heightAnchor.constraint(equalToConstant: 80).isActive = true
     image.widthAnchor.constraint(equalToConstant: 80).isActive = true
   }
-  func addButton() {
+  private func addButton() {
     let button = UIButton()
     button.setTitle("Добавить категорию", for: .normal)
     button.layer.cornerRadius = 16
@@ -72,6 +72,7 @@ class CategoryViewController: UIViewController {
   }
   @objc func addCategory() {
     print("Add Category")
-    dismiss(animated: true)
+    let addNewCategory = NewCategoryViewController()
+    navigationController?.pushViewController(addNewCategory, animated: true)
   }
 }

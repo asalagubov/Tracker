@@ -26,7 +26,7 @@ class ScheduleViewController: UIViewController {
     view.backgroundColor = .ypWhite
   }
 
-  func setupCategoryView() {
+  private func setupCategoryView() {
     navigationItem.hidesBackButton = true
 
     let tableView = UITableView()
@@ -48,7 +48,7 @@ class ScheduleViewController: UIViewController {
     tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
   }
 
-  func addButton() {
+  private func addButton() {
     let button = UIButton()
     button.setTitle("Готово", for: .normal)
     button.translatesAutoresizingMaskIntoConstraints = false

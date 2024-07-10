@@ -21,7 +21,7 @@ class NewTrackerViewController: UIViewController {
     view.backgroundColor = .ypWhite
   }
 
-  func setupButtons(buttonTitle: String, action: Selector) -> UIButton {
+  private func setupButtons(buttonTitle: String, action: Selector) -> UIButton {
     let button = UIButton()
     button.setTitle(buttonTitle, for: .normal)
     button.setTitleColor(.ypWhite, for: .normal)
@@ -43,7 +43,7 @@ class NewTrackerViewController: UIViewController {
     return button
   }
 
-  func addButton() {
+  private func addButton() {
     let newHabitButton = setupButtons(buttonTitle: "Привычка", action: #selector(habitButtonTapped))
     newHabitButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 

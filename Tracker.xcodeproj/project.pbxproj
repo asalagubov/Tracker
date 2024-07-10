@@ -25,6 +25,7 @@
 		0CCE47BE2C3EC1710082CBC8 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47BD2C3EC1710082CBC8 /* Tracker.swift */; };
 		0CCE47C02C3EC1930082CBC8 /* TrackerCaterogy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */; };
 		0CCE47C22C3EC1AB0082CBC8 /* TrackerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */; };
+		0CCE47C42C3EC71F0082CBC8 /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		0CCE47BD2C3EC1710082CBC8 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCaterogy.swift; sourceTree = "<group>"; };
 		0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecorder.swift; sourceTree = "<group>"; };
+		0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				0CCE47B52C3E69B90082CBC8 /* CategoryViewController.swift */,
+				0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */,
 			);
 			path = CategoryViewController;
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				0CCE47B02C3C7B5B0082CBC8 /* EventViewController.swift in Sources */,
 				0CB9F05E2C2F053300EB65FC /* AppDelegate.swift in Sources */,
 				0CB9F0602C2F053300EB65FC /* SceneDelegate.swift in Sources */,
+				0CCE47C42C3EC71F0082CBC8 /* NewCategoryViewController.swift in Sources */,
 				0CCE47C02C3EC1930082CBC8 /* TrackerCaterogy.swift in Sources */,
 				0CCE47AD2C3C794F0082CBC8 /* HabitViewController.swift in Sources */,
 			);

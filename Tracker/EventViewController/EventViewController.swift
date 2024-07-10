@@ -29,7 +29,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     view.backgroundColor = .ypWhite
   }
 
-  func setupHabitView() {
+  private func setupHabitView() {
     textField.backgroundColor = .ypBackground
     textField.textColor = .ypGray
     textField.placeholder = "Введите название трекера"
@@ -51,7 +51,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     textField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
   }
 
-  func setupStackView() {
+  private func setupStackView() {
     stackView.axis = .horizontal
     stackView.distribution = .fillEqually
     stackView.spacing = 8
@@ -64,7 +64,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
   }
 
-  func setupCancelButton() {
+  private func setupCancelButton() {
     let cancelButton = UIButton()
     cancelButton.setTitle("Отменить", for: .normal)
     cancelButton.layer.cornerRadius = 16
@@ -86,7 +86,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
   }
 
-  func setupCreateButton() {
+  private func setupCreateButton() {
     let createButton = UIButton()
     createButton.setTitle("Создать", for: .normal)
     createButton.layer.cornerRadius = 16
@@ -107,7 +107,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     createButton.addTarget(self, action: #selector(create), for: .touchUpInside)
   }
 
-  func createTable() {
+  private func createTable() {
     let tableView = UITableView()
     tableView.delegate = self
     tableView.dataSource = self
