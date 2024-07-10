@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol HabitViewControllerDelegate: AnyObject {
+    func didCreateNewHabit(_ tracker: Tracker)
+}
+
 class HabitViewController: UIViewController {
 
   let tableList = ["Категория", "Расписание"]
@@ -20,6 +24,7 @@ class HabitViewController: UIViewController {
   private var selectedCategory: TrackerCategory?
   private var selectedSchedule: [Weekday] = []
   private var enteredEventName = ""
+  private var delegate: HabitViewControllerDelegate?
 
 
   override func viewDidLoad() {
@@ -38,7 +43,7 @@ class HabitViewController: UIViewController {
 
   private func setupHabitView() {
     textField.backgroundColor = .ypBackground
-    textField.textColor = .ypGray
+    textField.textColor = .ypBlack
     textField.placeholder = "Введите название трекера"
     let paddingView : UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
     textField.leftView = paddingView
@@ -67,7 +72,7 @@ class HabitViewController: UIViewController {
     cancelButton.backgroundColor = .clear
     cancelButton.layer.borderColor = UIColor.ypRed.cgColor
     cancelButton.layer.borderWidth = 1
-    cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+    cancelButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     cancelButton.setTitleColor(.ypRed, for: .normal)
     cancelButton.translatesAutoresizingMaskIntoConstraints = false
 
@@ -86,7 +91,7 @@ class HabitViewController: UIViewController {
     createButton.layer.cornerRadius = 16
     createButton.layer.masksToBounds = true
     createButton.backgroundColor = .ypGray
-    createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+    createButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     createButton.setTitleColor(.ypWhite, for: .normal)
     createButton.translatesAutoresizingMaskIntoConstraints = false
 
@@ -121,109 +126,117 @@ class HabitViewController: UIViewController {
 
   func checkCreateButtonValidation() {
 
-      if selectedCategory != nil && !enteredEventName.isEmpty && !selectedSchedule.isEmpty {
-          createButton.isEnabled = true
-          createButton.backgroundColor = .ypBlack
-          createButton.setTitleColor(.ypWhite, for: .normal)
-      }
+    if selectedCategory != nil && !enteredEventName.isEmpty && !selectedSchedule.isEmpty {
+      createButton.isEnabled = true
+      createButton.backgroundColor = .ypBlack
+      createButton.setTitleColor(.ypWhite, for: .normal)
+    }
   }
 
-  @objc func cancel() {
+  @objc func cancel(_ sender: UIButton) {
     print("Cancel")
     dismiss(animated: true)
   }
 
   @objc func create() {
     print("Create")
+    let newTracker = Tracker(id: UUID(),
+                             title: enteredEventName,
+                             color: .cSelection5,
+                             emoji: "🍔",
+                             schedule: selectedSchedule)
+
+    delegate?.didCreateNewHabit(newTracker)
     dismiss(animated: true)
   }
 }
 
 extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableList.count
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return tableList.count
+  }
+
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+    let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+    cell.accessoryType = .disclosureIndicator
+    cell.backgroundColor = .ypBackground
+    let item = "\(tableList[indexPath.row])"
+    cell.textLabel?.text = item
+    if item == "Категория" {
+      cell.detailTextLabel?.text = selectedCategory?.title
+      cell.detailTextLabel?.textColor = .ypGray
+    }
+    if item == "Расписание" {
+      var text : [String] = []
+      for day in selectedSchedule {
+        text.append(day.rawValue)
+      }
+      cell.detailTextLabel?.text = text.joined(separator: ", ")
+      cell.detailTextLabel?.textColor = .ypGray
+      cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    return cell
+  }
 
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = .ypBackground
-        let item = "\(tableList[indexPath.row])"
-        cell.textLabel?.text = item
-        if item == "Категория" {
-            cell.detailTextLabel?.text = selectedCategory?.title
-            cell.detailTextLabel?.textColor = .ypGray
-        }
-        if item == "Расписание" {
-            var text : [String] = []
-            for day in selectedSchedule {
-                text.append(day.rawValue)
-            }
-            cell.detailTextLabel?.text = text.joined(separator: ", ")
-            cell.detailTextLabel?.textColor = .ypGray
-        }
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true) // Снимаем выделение ячейки
 
-        return cell
+    let selectedItem = tableList[indexPath.row]
+
+    if selectedItem == "Категория" {
+      let categoryViewController = CategoryViewController()
+      categoryViewController.delegate = self
+      let navigatonVC = UINavigationController(rootViewController: categoryViewController)
+      present(navigatonVC, animated: true)
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true) // Снимаем выделение ячейки
-
-        let selectedItem = tableList[indexPath.row]
-
-        if selectedItem == "Категория" {
-            let categoryViewController = CategoryViewController()
-            categoryViewController.delegate = self
-            let navigatonVC = UINavigationController(rootViewController: categoryViewController)
-            present(navigatonVC, animated: true)
-        }
-
-        if selectedItem == "Расписание" {
-            let scheduleVC = ScheduleViewController()
-            scheduleVC.delegate = self
-            navigationController?.pushViewController(scheduleVC, animated: true)
-        }
+    if selectedItem == "Расписание" {
+      let scheduleVC = ScheduleViewController()
+      scheduleVC.delegate = self
+      navigationController?.pushViewController(scheduleVC, animated: true)
     }
+  }
 }
 
 extension HabitViewController: UITextFieldDelegate {
 
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField.text != "" {
-            return true
-        } else {
-            textField.placeholder = "Название не может быть пустым"
-            return false
-        }
+  func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    if textField.text != "" {
+      return true
+    } else {
+      textField.placeholder = "Название не может быть пустым"
+      return false
     }
+  }
 
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        enteredEventName = textField.text ?? ""
-        checkCreateButtonValidation()
-        return true
-    }
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    textField.endEditing(true)
+    enteredEventName = textField.text ?? ""
+    checkCreateButtonValidation()
+    return true
+  }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        checkCreateButtonValidation()
-        return true
-    }
+  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    checkCreateButtonValidation()
+    return true
+  }
 
 }
 
 extension HabitViewController: CategoryViewControllerDelegate {
-    func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
-        selectedCategory = category
-        checkCreateButtonValidation()
-        tableView.reloadData()
-    }
+  func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
+    selectedCategory = category
+    checkCreateButtonValidation()
+    tableView.reloadData()
+  }
 }
 
 extension HabitViewController: SelectedScheduleDelegate {
-    func selectScheduleScreen(_ screen: ScheduleViewController, didSelectedDays schedule: [Weekday]) {
-        selectedSchedule = schedule
-        checkCreateButtonValidation()
-        tableView.reloadData()
-    }
+  func selectScheduleScreen(_ screen: ScheduleViewController, didSelectedDays schedule: [Weekday]) {
+    selectedSchedule = schedule
+    checkCreateButtonValidation()
+    tableView.reloadData()
+  }
 }

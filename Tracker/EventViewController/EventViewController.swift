@@ -38,7 +38,7 @@ class EventViewController: UIViewController {
 
   private func setupHabitView() {
     textField.backgroundColor = .ypBackground
-    textField.textColor = .ypGray
+    textField.textColor = .ypBlack
     textField.placeholder = "Введите название трекера"
     let paddingView : UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
     textField.leftView = paddingView

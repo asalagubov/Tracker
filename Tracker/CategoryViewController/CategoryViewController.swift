@@ -9,12 +9,17 @@ import Foundation
 import UIKit
 
 protocol CategoryViewControllerDelegate: AnyObject {
-    func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
+  func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
 }
 
 class CategoryViewController: UIViewController {
 
   weak var delegate: CategoryViewControllerDelegate?
+  var visibleCategory: [TrackerCategory] = []
+  var categories: [TrackerCategory] = [TrackerCategory(title: "Важное", trackers: [])]
+
+  let tableView = UITableView()
+  let stackView = UIStackView()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -22,31 +27,36 @@ class CategoryViewController: UIViewController {
     backGround()
     setupCategoryView()
     addButton()
+    mainScreenContent() // вызываем метод для установки видимости элементов интерфейса
   }
 
   private func backGround() {
     view.backgroundColor = .ypWhite
   }
+
   private func setupCategoryView() {
     navigationItem.hidesBackButton = true
 
-    let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
     stackView.alignment = .center
     stackView.spacing = 8
+
     view.addSubview(stackView)
 
     let image = UIImageView()
     image.translatesAutoresizingMaskIntoConstraints = false
     image.image = UIImage(named: "tracker_stub")
-    stackView.addArrangedSubview(image)
 
+    stackView.addArrangedSubview(image)
 
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Привычки и события можно объединить по смыслу"
+    label.text = "Привычки и события можно \nобъединить по смыслу"
     label.font = .systemFont(ofSize: 12, weight: .medium)
+    label.numberOfLines = 0
+    label.textAlignment = .center
+
     stackView.addArrangedSubview(label)
 
     stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -55,6 +65,7 @@ class CategoryViewController: UIViewController {
     image.heightAnchor.constraint(equalToConstant: 80).isActive = true
     image.widthAnchor.constraint(equalToConstant: 80).isActive = true
   }
+
   private func addButton() {
     let button = UIButton()
     button.setTitle("Добавить категорию", for: .normal)
@@ -67,17 +78,74 @@ class CategoryViewController: UIViewController {
 
     view.addSubview(button)
 
+    tableView.delegate = self
+    tableView.dataSource = self
+    tableView.layer.cornerRadius = 16
+    tableView.rowHeight = 75
+    tableView.isScrollEnabled = false
+    tableView.showsVerticalScrollIndicator = false
+    tableView.backgroundColor = .ypBackground
+    tableView.translatesAutoresizingMaskIntoConstraints = false
+
+    view.addSubview(tableView)
+
+    tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
+    tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+    tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
+    tableView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+
     button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
-
     button.heightAnchor.constraint(equalToConstant: 60).isActive = true
     button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
 
     button.addTarget(self, action: #selector(addCategory), for: .touchUpInside)
   }
+
+  private func mainScreenContent() {
+    if categories.isEmpty {
+      tableView.isHidden = true
+      stackView.isHidden = false
+    } else {
+      tableView.isHidden = false
+      stackView.isHidden = true
+    }
+    tableView.reloadData()
+  }
+
   @objc func addCategory() {
     print("Add Category")
     let addNewCategory = NewCategoryViewController()
     navigationController?.pushViewController(addNewCategory, animated: true)
+  }
+}
+
+extension CategoryViewController: UITableViewDelegate {
+
+}
+
+extension CategoryViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return categories.count
+  }
+
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+    cell.textLabel?.text = categories[indexPath.row].title
+    cell.selectionStyle = .none
+    cell.backgroundColor = .ypBackground
+    return cell
+  }
+
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+    delegate?.categoryScreen(self, didSelectedCategory: categories[indexPath.row])
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      self.dismiss(animated: true)
+    }
+  }
+
+  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    tableView.cellForRow(at: indexPath)?.accessoryType = .none
   }
 }
