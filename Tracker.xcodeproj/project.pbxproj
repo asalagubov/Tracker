@@ -28,6 +28,7 @@
 		0CCE47C42C3EC71F0082CBC8 /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */; };
 		0CCE47C62C3ECCD10082CBC8 /* TrackerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C52C3ECCD10082CBC8 /* TrackerViewCell.swift */; };
 		0CCE47C82C3F09AE0082CBC8 /* WeekDaySender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */; };
+		0CCE47CA2C3FC4E40082CBC8 /* TrackerRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCE47C92C3FC4E40082CBC8 /* TrackerRepo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		0CCE47C32C3EC71F0082CBC8 /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		0CCE47C52C3ECCD10082CBC8 /* TrackerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewCell.swift; sourceTree = "<group>"; };
 		0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDaySender.swift; sourceTree = "<group>"; };
+		0CCE47C92C3FC4E40082CBC8 /* TrackerRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRepo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +233,7 @@
 				0CCE47BF2C3EC1930082CBC8 /* TrackerCaterogy.swift */,
 				0CCE47C12C3EC1AB0082CBC8 /* TrackerRecorder.swift */,
 				0CCE47C72C3F09AE0082CBC8 /* WeekDaySender.swift */,
+				0CCE47C92C3FC4E40082CBC8 /* TrackerRepo.swift */,
 			);
 			name = Models;
 			path = ../Models;
@@ -379,6 +382,7 @@
 				0CCE47B02C3C7B5B0082CBC8 /* EventViewController.swift in Sources */,
 				0CB9F05E2C2F053300EB65FC /* AppDelegate.swift in Sources */,
 				0CB9F0602C2F053300EB65FC /* SceneDelegate.swift in Sources */,
+				0CCE47CA2C3FC4E40082CBC8 /* TrackerRepo.swift in Sources */,
 				0CCE47C42C3EC71F0082CBC8 /* NewCategoryViewController.swift in Sources */,
 				0CCE47C02C3EC1930082CBC8 /* TrackerCaterogy.swift in Sources */,
 				0CCE47AD2C3C794F0082CBC8 /* HabitViewController.swift in Sources */,

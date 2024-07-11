@@ -4,7 +4,6 @@
 //
 //  Created by Alexander Salagubov on 10.07.2024.
 //
-
 import Foundation
 import UIKit
 
@@ -15,11 +14,12 @@ protocol CategoryViewControllerDelegate: AnyObject {
 class CategoryViewController: UIViewController {
 
   weak var delegate: CategoryViewControllerDelegate?
-  var visibleCategory: [TrackerCategory] = []
-  var categories: [TrackerCategory] = [TrackerCategory(title: "Важное", trackers: [])]
+  
+  var trackerRepo = TrackerRepo.shared
 
   let tableView = UITableView()
   let stackView = UIStackView()
+  let button = UIButton()
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,7 +27,7 @@ class CategoryViewController: UIViewController {
     backGround()
     setupCategoryView()
     addButton()
-    mainScreenContent() // вызываем метод для установки видимости элементов интерфейса
+    mainScreenContent()
   }
 
   private func backGround() {
@@ -67,7 +67,6 @@ class CategoryViewController: UIViewController {
   }
 
   private func addButton() {
-    let button = UIButton()
     button.setTitle("Добавить категорию", for: .normal)
     button.layer.cornerRadius = 16
     button.layer.masksToBounds = true
@@ -103,7 +102,7 @@ class CategoryViewController: UIViewController {
   }
 
   private func mainScreenContent() {
-    if categories.isEmpty {
+    if trackerRepo.checkIsCategoryEmpty() {
       tableView.isHidden = true
       stackView.isHidden = false
     } else {
@@ -120,18 +119,16 @@ class CategoryViewController: UIViewController {
   }
 }
 
-extension CategoryViewController: UITableViewDelegate {
-
-}
+extension CategoryViewController: UITableViewDelegate {}
 
 extension CategoryViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return categories.count
+    return trackerRepo.categories.count
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-    cell.textLabel?.text = categories[indexPath.row].title
+    cell.textLabel?.text = trackerRepo.categories[indexPath.row].title.rawValue
     cell.selectionStyle = .none
     cell.backgroundColor = .ypBackground
     return cell
@@ -139,7 +136,7 @@ extension CategoryViewController: UITableViewDataSource {
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-    delegate?.categoryScreen(self, didSelectedCategory: categories[indexPath.row])
+    delegate?.categoryScreen(self, didSelectedCategory: trackerRepo.categories[indexPath.row])
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       self.dismiss(animated: true)
     }

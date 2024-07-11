@@ -8,7 +8,18 @@
 import Foundation
 import UIKit
 
+protocol DismissProtocol: AnyObject {
+    func dismissView()
+}
+
+protocol NewTrackerToTrckerVcDelegate: AnyObject {
+    func didDelegateNewTracker(_ tracker: Tracker)
+}
+
 class NewTrackerViewController: UIViewController {
+
+   weak var delegate: ReloadCollectionProtocol?
+    weak var habitDelegate: NewTrackerToTrckerVcDelegate?
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -32,7 +43,7 @@ class NewTrackerViewController: UIViewController {
     button.translatesAutoresizingMaskIntoConstraints = false
 
     view.addSubview(button)
-    
+
     button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     button.heightAnchor.constraint(equalToConstant: 60).isActive = true
@@ -54,6 +65,7 @@ class NewTrackerViewController: UIViewController {
   @objc func habitButtonTapped() {
     print("HabitButtonTapped")
     let newTrackerVC = HabitViewController()
+      newTrackerVC.delegate = self
     let navigationController = UINavigationController(rootViewController: newTrackerVC)
     navigationController.modalPresentationStyle = .popover
             present(navigationController, animated: true, completion: nil)
@@ -68,3 +80,16 @@ class NewTrackerViewController: UIViewController {
   }
 }
 
+extension NewTrackerViewController: DismissProtocol {
+    func dismissView() {
+        dismiss(animated: true) {
+            self.delegate?.reloadCollection()
+        }
+    }
+}
+
+extension NewTrackerViewController: HabitViewControllerDelegate{
+    func didCreateNewHabit(_ tracker: Tracker) {
+        habitDelegate?.didDelegateNewTracker(tracker)
+    }
+}

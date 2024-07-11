@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol HabitViewControllerDelegate: AnyObject {
-    func didCreateNewHabit(_ tracker: Tracker)
+  func didCreateNewHabit(_ tracker: Tracker)
 }
 
 class HabitViewController: UIViewController {
@@ -20,11 +20,12 @@ class HabitViewController: UIViewController {
   let colorList: [UIColor] = [.cSelection1,.cSelection2,.cSelection3,.cSelection4,.cSelection5,.cSelection6,.cSelection7,.cSelection8,.cSelection9,.cSelection10,.cSelection11,.cSelection12,.cSelection13,.cSelection14,.cSelection15,.cSelection16,.cSelection17,.cSelection18]
   let tableView = UITableView()
   let createButton = UIButton()
+  let trackerRepo = TrackerRepo.shared
 
   private var selectedCategory: TrackerCategory?
   private var selectedSchedule: [Weekday] = []
   private var enteredEventName = ""
-  private var delegate: HabitViewControllerDelegate?
+  weak var delegate: HabitViewControllerDelegate?
 
 
   override func viewDidLoad() {
@@ -53,6 +54,7 @@ class HabitViewController: UIViewController {
     textField.leftViewMode = .always
     textField.layer.cornerRadius = 16
     textField.layer.masksToBounds = true
+    textField.delegate = self
     textField.translatesAutoresizingMaskIntoConstraints = false
 
     view.addSubview(textField)
@@ -91,6 +93,7 @@ class HabitViewController: UIViewController {
     createButton.layer.cornerRadius = 16
     createButton.layer.masksToBounds = true
     createButton.backgroundColor = .ypGray
+    createButton.isEnabled = false
     createButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     createButton.setTitleColor(.ypWhite, for: .normal)
     createButton.translatesAutoresizingMaskIntoConstraints = false
@@ -125,10 +128,13 @@ class HabitViewController: UIViewController {
   }
 
   func checkCreateButtonValidation() {
-
-    if selectedCategory != nil && !enteredEventName.isEmpty && !selectedSchedule.isEmpty {
+    if selectedCategory != nil && !enteredEventName.isEmpty {
       createButton.isEnabled = true
       createButton.backgroundColor = .ypBlack
+      createButton.setTitleColor(.ypWhite, for: .normal)
+    } else {
+      createButton.isEnabled = false
+      createButton.backgroundColor = .ypGray
       createButton.setTitleColor(.ypWhite, for: .normal)
     }
   }
@@ -146,8 +152,9 @@ class HabitViewController: UIViewController {
                              emoji: "🍔",
                              schedule: selectedSchedule)
 
-    delegate?.didCreateNewHabit(newTracker)
-    dismiss(animated: true)
+    self.trackerRepo.createNewTracker(tracker: newTracker)
+    self.delegate?.didCreateNewHabit(newTracker)
+    self.dismiss(animated: true)
   }
 }
 
@@ -164,8 +171,9 @@ extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
     let item = "\(tableList[indexPath.row])"
     cell.textLabel?.text = item
     if item == "Категория" {
-      cell.detailTextLabel?.text = selectedCategory?.title
+      cell.detailTextLabel?.text = selectedCategory?.title.rawValue
       cell.detailTextLabel?.textColor = .ypGray
+      cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
     if item == "Расписание" {
       var text : [String] = []
@@ -181,7 +189,7 @@ extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    tableView.deselectRow(at: indexPath, animated: true) // Снимаем выделение ячейки
+    tableView.deselectRow(at: indexPath, animated: true)
 
     let selectedItem = tableList[indexPath.row]
 
@@ -219,10 +227,10 @@ extension HabitViewController: UITextFieldDelegate {
   }
 
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    enteredEventName = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
     checkCreateButtonValidation()
     return true
   }
-
 }
 
 extension HabitViewController: CategoryViewControllerDelegate {

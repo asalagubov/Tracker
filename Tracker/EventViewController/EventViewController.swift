@@ -17,9 +17,12 @@ class EventViewController: UIViewController {
   let stackView = UIStackView()
   let createButton = UIButton()
   let tableView = UITableView()
+  let trackerRepo = TrackerRepo.shared
 
-  private var enteredTrackerName: String?
+  weak var delegate: DismissProtocol?
+
   private var selectedCategory : TrackerCategory?
+  private var enteredTrackerName = ""
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -97,6 +100,7 @@ class EventViewController: UIViewController {
     createButton.setTitle("Создать", for: .normal)
     createButton.layer.cornerRadius = 16
     createButton.layer.masksToBounds = true
+    createButton.isEnabled = false
     createButton.backgroundColor = .ypGray
     createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
     createButton.setTitleColor(.ypWhite, for: .normal)
@@ -133,19 +137,14 @@ class EventViewController: UIViewController {
 
   }
 
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    tableView.deselectRow(at: indexPath, animated: true)
-    let selectedItem = tableList[indexPath.row]
-    if selectedItem == "Категория" {
-      let categotyVC = CategoryViewController()
-      navigationController?.pushViewController(categotyVC, animated: true)
-    }
-  }
-
   func checkCreateButtonValidation() {
-    if selectedCategory != nil && enteredTrackerName != nil {
+    if selectedCategory != nil && enteredTrackerName.isEmpty {
       createButton.isEnabled = true
       createButton.backgroundColor = .ypBlack
+      createButton.setTitleColor(.ypWhite, for: .normal)
+    } else {
+      createButton.isEnabled = false
+      createButton.backgroundColor = .ypGray
       createButton.setTitleColor(.ypWhite, for: .normal)
     }
   }
@@ -155,27 +154,52 @@ class EventViewController: UIViewController {
     dismiss(animated: true)
   }
 
-  @objc func create() {
+  @objc func create(_ sender: UIButton) {
     print("Create")
-    dismiss(animated: true)
+    let newTracker = Tracker(id: UUID(),
+                             title: self.enteredTrackerName,
+                             color: .cSelection2,
+                             emoji: "☠️",
+                             schedule: [Weekday.monday,
+                                        Weekday.tuesday,
+                                        Weekday.wednesday,
+                                        Weekday.thursday,
+                                        Weekday.friday,
+                                        Weekday.saturday,
+                                        Weekday.sunday])
+
+    self.trackerRepo.createNewTracker(tracker: newTracker)
+    self.dismiss(animated: true)
+    self.delegate?.dismissView()
   }
 }
-
 extension EventViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return tableList.count
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-    cell.textLabel?.text = tableList[indexPath.row]
+    let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     cell.accessoryType = .disclosureIndicator
     cell.backgroundColor = .ypBackground
-    cell.detailTextLabel?.text = selectedCategory?.title
+    cell.textLabel?.text = tableList[indexPath.row]
+    cell.detailTextLabel?.text = selectedCategory?.title.rawValue
+    cell.detailTextLabel?.textColor = .ypGray
+    cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     return cell
   }
-}
 
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    let selectedItem = tableList[indexPath.row]
+    if selectedItem == "Категория" {
+      let categoryViewController = CategoryViewController()
+      categoryViewController.delegate = self
+      let navigatonVC = UINavigationController(rootViewController: categoryViewController)
+      present(navigatonVC, animated: true)
+    }
+  }
+}
 extension EventViewController: CategoryViewControllerDelegate {
   func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
     selectedCategory = category
