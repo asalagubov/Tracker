@@ -8,8 +8,12 @@
 import Foundation
 import UIKit
 
-class EventViewController: UIViewController {
+protocol EventViewControllerDelegate: AnyObject {
+  func didCreateNewEvent(_ tracker: Tracker)
+}
 
+class EventViewController: UIViewController {
+  
   let tableList = ["Категория"]
   let emojiList = ["🙂","😻","🌺","🐶","❤️","😇","😡","🥶","🤔","🙌","🍔","🥦","🏓","🥇","🎸","🏝","😪"]
   let colorList: [UIColor] = [.cSelection1,.cSelection2,.cSelection3,.cSelection4,.cSelection5,.cSelection6,.cSelection7,.cSelection8,.cSelection9,.cSelection10,.cSelection11,.cSelection12,.cSelection13,.cSelection14,.cSelection15,.cSelection16,.cSelection17,.cSelection18]
@@ -18,28 +22,28 @@ class EventViewController: UIViewController {
   let createButton = UIButton()
   let tableView = UITableView()
   let trackerRepo = TrackerRepo.shared
-
-  weak var delegate: DismissProtocol?
-
+  
+  weak var delegate: EventViewControllerDelegate?
+  
   private var selectedCategory : TrackerCategory?
   private var enteredTrackerName = ""
-
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Новое нерегулярное событие"
     backGround()
-    setupHabitView()
+    setupEventView()
     setupStackView()
     setupCancelButton()
     setupCreateButton()
     createTable()
   }
-
+  
   private func backGround() {
     view.backgroundColor = .ypWhite
   }
-
-  private func setupHabitView() {
+  
+  private func setupEventView() {
     textField.backgroundColor = .ypBackground
     textField.textColor = .ypBlack
     textField.placeholder = "Введите название трекера"
@@ -50,30 +54,31 @@ class EventViewController: UIViewController {
     textField.rightViewMode = .always
     textField.layer.cornerRadius = 16
     textField.layer.masksToBounds = true
+    textField.delegate = self
     textField.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(textField)
-
+    
     textField.heightAnchor.constraint(equalToConstant: 75).isActive = true
     textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
     textField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
   }
-
+  
   private func setupStackView() {
     stackView.axis = .horizontal
     stackView.distribution = .fillEqually
     stackView.spacing = 8
     stackView.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(stackView)
-
+    
     stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
   }
-
+  
   private func setupCancelButton() {
     let cancelButton = UIButton()
     cancelButton.setTitle("Отменить", for: .normal)
@@ -85,17 +90,17 @@ class EventViewController: UIViewController {
     cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
     cancelButton.setTitleColor(.ypRed, for: .normal)
     cancelButton.translatesAutoresizingMaskIntoConstraints = false
-
+    
     stackView.addArrangedSubview(cancelButton)
-
+    
     cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     cancelButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
     cancelButton.widthAnchor.constraint(equalToConstant: 166).isActive = true
-
+    
     cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
   }
-
+  
   private func setupCreateButton() {
     createButton.setTitle("Создать", for: .normal)
     createButton.layer.cornerRadius = 16
@@ -105,18 +110,18 @@ class EventViewController: UIViewController {
     createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
     createButton.setTitleColor(.ypWhite, for: .normal)
     createButton.translatesAutoresizingMaskIntoConstraints = false
-
+    
     stackView.addArrangedSubview(createButton)
-
+    
     createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
     createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-
+    
     createButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
     createButton.widthAnchor.constraint(equalToConstant: 166).isActive = true
-
+    
     createButton.addTarget(self, action: #selector(create), for: .touchUpInside)
   }
-
+  
   private func createTable() {
     tableView.delegate = self
     tableView.dataSource = self
@@ -124,21 +129,19 @@ class EventViewController: UIViewController {
     tableView.rowHeight = 75
     tableView.backgroundColor = .ypBackground
     tableView.isScrollEnabled = false
-    tableView.delegate = self
-    tableView.dataSource = self
     tableView.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(tableView)
-
+    
     tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24).isActive = true
     tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)).isActive = true
-
+    
   }
-
+  
   func checkCreateButtonValidation() {
-    if selectedCategory != nil && enteredTrackerName.isEmpty {
+    if selectedCategory != nil && !enteredTrackerName.isEmpty {
       createButton.isEnabled = true
       createButton.backgroundColor = .ypBlack
       createButton.setTitleColor(.ypWhite, for: .normal)
@@ -148,12 +151,12 @@ class EventViewController: UIViewController {
       createButton.setTitleColor(.ypWhite, for: .normal)
     }
   }
-
+  
   @objc func cancel() {
     print("Cancel")
     dismiss(animated: true)
   }
-
+  
   @objc func create(_ sender: UIButton) {
     print("Create")
     let newTracker = Tracker(id: UUID(),
@@ -167,17 +170,17 @@ class EventViewController: UIViewController {
                                         Weekday.friday,
                                         Weekday.saturday,
                                         Weekday.sunday])
-
+    
     self.trackerRepo.createNewTracker(tracker: newTracker)
+    self.delegate?.didCreateNewEvent(newTracker)
     self.dismiss(animated: true)
-    self.delegate?.dismissView()
   }
 }
 extension EventViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return tableList.count
   }
-
+  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     cell.accessoryType = .disclosureIndicator
@@ -188,7 +191,7 @@ extension EventViewController: UITableViewDelegate, UITableViewDataSource {
     cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     return cell
   }
-
+  
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
     let selectedItem = tableList[indexPath.row]
@@ -200,10 +203,36 @@ extension EventViewController: UITableViewDelegate, UITableViewDataSource {
     }
   }
 }
+
 extension EventViewController: CategoryViewControllerDelegate {
   func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
     selectedCategory = category
     tableView.reloadData()
     checkCreateButtonValidation()
+  }
+}
+
+extension EventViewController: UITextFieldDelegate {
+  
+  func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    if textField.text != "" {
+      return true
+    } else {
+      textField.placeholder = "Название не может быть пустым"
+      return false
+    }
+  }
+  
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    textField.endEditing(true)
+    enteredTrackerName = textField.text ?? ""
+    checkCreateButtonValidation()
+    return true
+  }
+  
+  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    enteredTrackerName = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+    checkCreateButtonValidation()
+    return true
   }
 }

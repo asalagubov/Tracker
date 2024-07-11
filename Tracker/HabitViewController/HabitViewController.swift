@@ -13,7 +13,7 @@ protocol HabitViewControllerDelegate: AnyObject {
 }
 
 class HabitViewController: UIViewController {
-
+  
   let tableList = ["Категория", "Расписание"]
   let textField = UITextField()
   let emojiList = ["🙂","😻","🌺","🐶","❤️","😇","😡","🥶","🤔","🙌","🍔","🥦","🏓","🥇","🎸","🏝","😪"]
@@ -21,13 +21,13 @@ class HabitViewController: UIViewController {
   let tableView = UITableView()
   let createButton = UIButton()
   let trackerRepo = TrackerRepo.shared
-
+  
   private var selectedCategory: TrackerCategory?
   private var selectedSchedule: [Weekday] = []
   private var enteredEventName = ""
   weak var delegate: HabitViewControllerDelegate?
-
-
+  
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Новая привычка"
@@ -37,11 +37,11 @@ class HabitViewController: UIViewController {
     setupCreateButton()
     createTable()
   }
-
+  
   private func backGround() {
     view.backgroundColor = .ypWhite
   }
-
+  
   private func setupHabitView() {
     textField.backgroundColor = .ypBackground
     textField.textColor = .ypBlack
@@ -56,16 +56,16 @@ class HabitViewController: UIViewController {
     textField.layer.masksToBounds = true
     textField.delegate = self
     textField.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(textField)
-
+    
     textField.heightAnchor.constraint(equalToConstant: 75).isActive = true
     textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
     textField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
   }
-
+  
   private func setupCancelButton() {
     let cancelButton = UIButton()
     cancelButton.setTitle("Отменить", for: .normal)
@@ -77,17 +77,17 @@ class HabitViewController: UIViewController {
     cancelButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     cancelButton.setTitleColor(.ypRed, for: .normal)
     cancelButton.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(cancelButton)
-
+    
     cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     cancelButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
     cancelButton.widthAnchor.constraint(equalToConstant: 166).isActive = true
-
+    
     cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
   }
-
+  
   private func setupCreateButton() {
     createButton.setTitle("Создать", for: .normal)
     createButton.layer.cornerRadius = 16
@@ -97,18 +97,18 @@ class HabitViewController: UIViewController {
     createButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     createButton.setTitleColor(.ypWhite, for: .normal)
     createButton.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(createButton)
-
+    
     createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
     createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-
+    
     createButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
     createButton.widthAnchor.constraint(equalToConstant: 166).isActive = true
-
+    
     createButton.addTarget(self, action: #selector(create), for: .touchUpInside)
   }
-
+  
   private func createTable() {
     tableView.delegate = self
     tableView.dataSource = self
@@ -117,16 +117,16 @@ class HabitViewController: UIViewController {
     tableView.backgroundColor = .ypBackground
     tableView.isScrollEnabled = false
     tableView.translatesAutoresizingMaskIntoConstraints = false
-
+    
     view.addSubview(tableView)
-
+    
     tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
     tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
     tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24).isActive = true
     tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)).isActive = true
-
+    
   }
-
+  
   func checkCreateButtonValidation() {
     if selectedCategory != nil && !enteredEventName.isEmpty {
       createButton.isEnabled = true
@@ -138,12 +138,12 @@ class HabitViewController: UIViewController {
       createButton.setTitleColor(.ypWhite, for: .normal)
     }
   }
-
+  
   @objc func cancel(_ sender: UIButton) {
     print("Cancel")
     dismiss(animated: true)
   }
-
+  
   @objc func create() {
     print("Create")
     let newTracker = Tracker(id: UUID(),
@@ -151,7 +151,7 @@ class HabitViewController: UIViewController {
                              color: .cSelection5,
                              emoji: "🍔",
                              schedule: selectedSchedule)
-
+    
     self.trackerRepo.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewHabit(newTracker)
     self.dismiss(animated: true)
@@ -162,9 +162,9 @@ extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return tableList.count
   }
-
+  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+    
     let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     cell.accessoryType = .disclosureIndicator
     cell.backgroundColor = .ypBackground
@@ -184,22 +184,22 @@ extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
       cell.detailTextLabel?.textColor = .ypGray
       cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
-
+    
     return cell
   }
-
+  
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-
+    
     let selectedItem = tableList[indexPath.row]
-
+    
     if selectedItem == "Категория" {
       let categoryViewController = CategoryViewController()
       categoryViewController.delegate = self
       let navigatonVC = UINavigationController(rootViewController: categoryViewController)
       present(navigatonVC, animated: true)
     }
-
+    
     if selectedItem == "Расписание" {
       let scheduleVC = ScheduleViewController()
       scheduleVC.delegate = self
@@ -209,7 +209,7 @@ extension HabitViewController : UITableViewDelegate, UITableViewDataSource {
 }
 
 extension HabitViewController: UITextFieldDelegate {
-
+  
   func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
     if textField.text != "" {
       return true
@@ -218,14 +218,14 @@ extension HabitViewController: UITextFieldDelegate {
       return false
     }
   }
-
+  
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.endEditing(true)
     enteredEventName = textField.text ?? ""
     checkCreateButtonValidation()
     return true
   }
-
+  
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     enteredEventName = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
     checkCreateButtonValidation()
