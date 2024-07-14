@@ -7,6 +7,10 @@
 
 import UIKit
 
+enum CategoryList: String {
+  case usefull = "Важное"
+}
+
 protocol ReloadCollectionProtocol: AnyObject {
   func reloadCollection()
 }
@@ -14,15 +18,15 @@ protocol ReloadCollectionProtocol: AnyObject {
 class TrackerViewController: UIViewController {
   
   var completedTrackers: [TrackerRecorder] = []
+  var visibleCategory: [TrackerCategory] = []
+  var categories: [TrackerCategory] = [TrackerCategory(title: .usefull, trackers: [])]
   
-  
-  private let trackerRepo = TrackerRepo.shared
   
   let datePicker = UIDatePicker()
   let stackView = UIStackView()
   let label = UILabel()
   let image = UIImageView()
-  let currentDate = Calendar.current
+  var currentDate = Date()
   
   private lazy var collectionView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
@@ -43,7 +47,7 @@ class TrackerViewController: UIViewController {
     setupTrackerView()
     setupDatePicker()
     setupCollectionView()
-    mainScreenContent(Date())
+    mainScreenContent(currentDate)
   }
   
   private func mainScreenContent(_ date: Date) {
@@ -112,8 +116,8 @@ class TrackerViewController: UIViewController {
   }
   
   private func reloadHolders() {
-    let allTrackersEmpty = trackerRepo.checkIsTrackerRepoEmpty()
-    let visibleTrackersEmpty = trackerRepo.checkIsVisibleEmpty()
+    let allTrackersEmpty = checkIsTrackerRepoEmpty()
+    let visibleTrackersEmpty = checkIsVisibleEmpty()
     
     if allTrackersEmpty || visibleTrackersEmpty {
       collectionView.isHidden = true
@@ -139,37 +143,126 @@ class TrackerViewController: UIViewController {
   
   @objc func datePickerChanged() {
     print("CalendarTapped")
-    mainScreenContent(datePicker.date)
+    currentDate = datePicker.date
+    mainScreenContent(currentDate)
   }
   
   private func checkIsTrackerCompletedToday(id: UUID) -> Bool {
     completedTrackers.contains { trackerRecord in
-      let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+      let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: currentDate)
       return trackerRecord.id == id && isSameDay
     }
   }
   
   private func showTrackersInDate(_ date: Date) {
-    trackerRepo.removeAllVisibleCategory()
-    let weekday = currentDate.component(.weekday, from: date)
-    trackerRepo.appendTrackerInVisibleTrackers(weekday: weekday)
+    removeAllVisibleCategory()
+    let weekday = Calendar.current.component(.weekday, from: date)
+    appendTrackerInVisibleTrackers(weekday: weekday)
     collectionView.reloadData()
   }
+  
+  func appendTrackerInVisibleTrackers(weekday: Int) {
+    var weekDayCase: Weekday = .monday
+    
+    switch weekday {
+    case 1:
+      weekDayCase = .sunday
+    case 2:
+      weekDayCase = .monday
+    case 3:
+      weekDayCase = .tuesday
+    case 4:
+      weekDayCase = .wednesday
+    case 5:
+      weekDayCase = .thursday
+    case 6:
+      weekDayCase = .friday
+    case 7:
+      weekDayCase = .saturday
+    default:
+      break
+    }
+    
+    var trackers = [Tracker]()
+    for tracker in categories.first!.trackers {
+      for day in tracker.schedule {
+        if day == weekDayCase {
+          trackers.append(tracker)
+        }
+      }
+    }
+    
+    let category = TrackerCategory(title: .usefull, trackers: trackers)
+    visibleCategory.append(category)
+  }
+  
+  func removeAllVisibleCategory() {
+    visibleCategory.removeAll()
+  }
+  
+  func createNewTracker(tracker: Tracker) {
+    var trackers: [Tracker] = []
+    guard let list = categories.first else {return}
+    for tracker in list.trackers{
+      trackers.append(tracker)
+    }
+    trackers.append(tracker)
+    categories = [TrackerCategory(title: .usefull, trackers: trackers)]
+    mainScreenContent(currentDate)
+  }
+  
+  func createNewCategory(newCategoty: TrackerCategory) {
+    categories.append(newCategoty)
+  }
+  
+  func checkIsCategoryEmpty() -> Bool {
+    categories.isEmpty
+  }
+  
+  func checkIsTrackerRepoEmpty() -> Bool {
+    categories[0].trackers.isEmpty
+  }
+  
+  func checkIsVisibleEmpty() -> Bool {
+    if visibleCategory.isEmpty {
+      return true
+    }
+    if visibleCategory[0].trackers.isEmpty {
+      return true
+    } else {
+      return false
+    }
+  }
+  
+  func getTrackerDetails(section: Int, item: Int) -> Tracker {
+    visibleCategory[section].trackers[item]
+  }
+  
+  func getNumberOfCategories() -> Int {
+    visibleCategory.count
+  }
+  
+  func getNumberOfItemsInSection(section: Int) -> Int {
+    visibleCategory[section].trackers.count
+  }
+  
+  func getTitleForSection(sectionNumber: Int) -> String {
+    visibleCategory[sectionNumber].title.rawValue
+  }
 }
-
 extension TrackerViewController: UICollectionViewDataSource {
   
   func numberOfSections(in collectionView: UICollectionView) -> Int {
-    trackerRepo.getNumberOfCategories()
+    getNumberOfCategories()
   }
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    trackerRepo.getNumberOfItemsInSection(section: section)
+    getNumberOfItemsInSection(section: section)
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? TrackerCollectionViewCell else { return UICollectionViewCell() }
-    let tracker = trackerRepo.getTrackerDetails(section: indexPath.section, item: indexPath.item)
+    let tracker = getTrackerDetails(section: indexPath.section, item: indexPath.item)
     cell.delegate = self
     let isCompletedToday = checkIsTrackerCompletedToday(id: tracker.id)
     let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
@@ -232,5 +325,6 @@ extension TrackerViewController: NewTrackerToTrackerVcDelegate {
   func didDelegateNewTracker(_ tracker: Tracker) {
     print("didCreateNewHabit asked")
     mainScreenContent(Date())
+    createNewTracker(tracker: tracker)
   }
 }

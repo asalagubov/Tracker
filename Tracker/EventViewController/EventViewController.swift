@@ -21,13 +21,13 @@ class EventViewController: UIViewController {
   let stackView = UIStackView()
   let createButton = UIButton()
   let tableView = UITableView()
-  let trackerRepo = TrackerRepo.shared
   
   weak var delegate: EventViewControllerDelegate?
   
   private var selectedCategory : TrackerCategory?
   private var enteredTrackerName = ""
-  
+  var trackerVC = TrackerViewController()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Новое нерегулярное событие"
@@ -171,7 +171,7 @@ class EventViewController: UIViewController {
                                         Weekday.saturday,
                                         Weekday.sunday])
     
-    self.trackerRepo.createNewTracker(tracker: newTracker)
+    self.trackerVC.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewEvent(newTracker)
     self.dismiss(animated: true)
   }

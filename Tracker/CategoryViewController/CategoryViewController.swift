@@ -14,8 +14,7 @@ protocol CategoryViewControllerDelegate: AnyObject {
 class CategoryViewController: UIViewController {
   
   weak var delegate: CategoryViewControllerDelegate?
-  
-  var trackerRepo = TrackerRepo.shared
+  var trackerVC = TrackerViewController()
   
   let tableView = UITableView()
   let stackView = UIStackView()
@@ -102,7 +101,7 @@ class CategoryViewController: UIViewController {
   }
   
   private func mainScreenContent() {
-    if trackerRepo.checkIsCategoryEmpty() {
+    if trackerVC.checkIsCategoryEmpty() {
       tableView.isHidden = true
       stackView.isHidden = false
     } else {
@@ -123,12 +122,12 @@ extension CategoryViewController: UITableViewDelegate {}
 
 extension CategoryViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return trackerRepo.categories.count
+    return trackerVC.categories.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-    cell.textLabel?.text = trackerRepo.categories[indexPath.row].title.rawValue
+    cell.textLabel?.text = trackerVC.categories[indexPath.row].title.rawValue
     cell.selectionStyle = .none
     cell.backgroundColor = .ypBackground
     return cell
@@ -136,7 +135,7 @@ extension CategoryViewController: UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-    delegate?.categoryScreen(self, didSelectedCategory: trackerRepo.categories[indexPath.row])
+    delegate?.categoryScreen(self, didSelectedCategory: trackerVC.categories[indexPath.row])
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       self.dismiss(animated: true)
     }

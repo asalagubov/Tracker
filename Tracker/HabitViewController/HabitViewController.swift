@@ -20,13 +20,15 @@ class HabitViewController: UIViewController {
   let colorList: [UIColor] = [.cSelection1,.cSelection2,.cSelection3,.cSelection4,.cSelection5,.cSelection6,.cSelection7,.cSelection8,.cSelection9,.cSelection10,.cSelection11,.cSelection12,.cSelection13,.cSelection14,.cSelection15,.cSelection16,.cSelection17,.cSelection18]
   let tableView = UITableView()
   let createButton = UIButton()
-  let trackerRepo = TrackerRepo.shared
   
   private var selectedCategory: TrackerCategory?
   private var selectedSchedule: [Weekday] = []
   private var enteredEventName = ""
   weak var delegate: HabitViewControllerDelegate?
-  
+  weak var dismissDelegate: DismissProtocol?
+  var trackerVC = TrackerViewController()
+
+
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -152,8 +154,9 @@ class HabitViewController: UIViewController {
                              emoji: "🍔",
                              schedule: selectedSchedule)
     
-    self.trackerRepo.createNewTracker(tracker: newTracker)
+    self.trackerVC.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewHabit(newTracker)
+    self.dismissDelegate?.dismissView()
     self.dismiss(animated: true)
   }
 }
