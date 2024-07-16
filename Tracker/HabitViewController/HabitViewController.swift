@@ -156,7 +156,6 @@ class HabitViewController: UIViewController {
     
     self.trackerVC.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewHabit(newTracker)
-    self.dismissDelegate?.dismissView()
     self.dismiss(animated: true)
   }
 }

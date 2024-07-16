@@ -136,6 +136,7 @@ class TrackerViewController: UIViewController {
     print("PlusButtonTapped")
     let newTrackerVC = NewTrackerViewController()
     newTrackerVC.habitDelegate = self
+    newTrackerVC.eventDelegate = self
     let navigationController = UINavigationController(rootViewController: newTrackerVC)
     navigationController.modalPresentationStyle = .popover
     present(navigationController, animated: true, completion: nil)
@@ -191,7 +192,6 @@ class TrackerViewController: UIViewController {
         }
       }
     }
-    
     let category = TrackerCategory(title: .usefull, trackers: trackers)
     visibleCategory.append(category)
   }

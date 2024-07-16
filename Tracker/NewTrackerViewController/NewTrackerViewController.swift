@@ -20,6 +20,7 @@ class NewTrackerViewController: UIViewController {
   
   weak var delegate: ReloadCollectionProtocol?
   weak var habitDelegate: NewTrackerToTrackerVcDelegate?
+  weak var eventDelegate: NewTrackerToTrackerVcDelegate?
   weak var dismissDelegate: DismissProtocol?
 
   override func viewDidLoad() {
@@ -76,6 +77,8 @@ class NewTrackerViewController: UIViewController {
   @objc func eventButtonTapped() {
     print("EventButtonTapped")
     let newTrackerVC = EventViewController()
+    newTrackerVC.delegate = self
+    newTrackerVC.dismissDelegate = self
     let navigationController = UINavigationController(rootViewController: newTrackerVC)
     navigationController.modalPresentationStyle = .popover
     present(navigationController, animated: true, completion: nil)
@@ -93,6 +96,13 @@ extension NewTrackerViewController: DismissProtocol {
 extension NewTrackerViewController: HabitViewControllerDelegate{
   func didCreateNewHabit(_ tracker: Tracker) {
     habitDelegate?.didDelegateNewTracker(tracker)
+    dismissDelegate?.dismissView()
+  }
+}
+
+extension NewTrackerViewController: EventViewControllerDelegate{
+  func didCreateNewEvent(_ tracker: Tracker) {
+    eventDelegate?.didDelegateNewTracker(tracker)
     dismissDelegate?.dismissView()
   }
 }
