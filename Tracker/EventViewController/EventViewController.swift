@@ -156,9 +156,13 @@ class EventViewController: UIViewController {
 
       createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
       createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-
       createButton.heightAnchor.constraint(equalToConstant: 60),
       createButton.widthAnchor.constraint(equalToConstant: 166),
+
+      tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+      tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+      tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+      tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)),
 
       emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
       emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -168,12 +172,7 @@ class EventViewController: UIViewController {
       colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 24),
       colorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
       colorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      colorCollectionView.heightAnchor.constraint(equalToConstant: 50),
-
-      tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-      tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
-      tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count))
+      colorCollectionView.heightAnchor.constraint(equalToConstant: 50)
     ])
   }
 
