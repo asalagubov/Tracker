@@ -180,7 +180,10 @@ class EventViewController: UIViewController {
     tableView.delegate = self
     tableView.dataSource = self
     tableView.layer.cornerRadius = 16
-    tableView.rowHeight = 75
+    tableView.separatorStyle = .singleLine
+    tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    tableView.rowHeight = 76
+    tableView.rowHeight = 76
     tableView.backgroundColor = .ypBackground
     tableView.isScrollEnabled = false
     tableView.translatesAutoresizingMaskIntoConstraints = false
