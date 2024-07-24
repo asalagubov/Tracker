@@ -411,10 +411,9 @@ extension HabitViewController: UICollectionViewDataSource, UICollectionViewDeleg
         cell.contentView.backgroundColor = .clear
       }
       if let cell = collectionView.cellForItem(at: indexPath), selectedColor != nil {
-        cell.layer.cornerRadius = 9
-        cell.layer.masksToBounds = true
-        cell.layer.borderWidth = 3
-        cell.layer.borderColor = selectedColor?.withAlphaComponent(0.3).cgColor
+        cell.layer.borderWidth = 4
+        cell.layer.cornerRadius = 12
+        cell.layer.borderColor = selectedColor?.withAlphaComponent(0.4).cgColor
       }
     }
     checkCreateButtonValidation()
