@@ -40,7 +40,7 @@ class TrackerViewController: UIViewController {
     collectionView.dataSource = self
     collectionView.delegate = self
     collectionView.showsVerticalScrollIndicator = false
-    collectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+    collectionView.register(TrackerViewCell.self, forCellWithReuseIdentifier: "cell")
     return collectionView
   }()
 
@@ -55,27 +55,25 @@ class TrackerViewController: UIViewController {
   }
 
   private func loadTrackersFromCoreData() {
-      let storedTrackers = trackerStore.fetchTracker()
-      print("Loaded Trackers: \(storedTrackers)")  // Log loaded trackers
+    let storedTrackers = trackerStore.fetchTracker()
+    print("Loaded Trackers: \(storedTrackers)")  // Log loaded trackers
 
-      let storedCategories = trackerCategoryStore.fetchAllCategories()
-      print("Loaded Categories: \(storedCategories.map { $0.title })")  // Log loaded categories
+    let storedCategories = trackerCategoryStore.fetchAllCategories()
+    print("Loaded Categories: \(storedCategories.map { $0.title })")  // Log loaded categories
 
-      if !storedCategories.isEmpty {
-          categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
-          print("Decoded Categories: \(categories)")  // Log decoded categories
-      } else {
-          if let firstCategory = categories.first {
-              let updatedCategory = TrackerCategory(title: firstCategory.title, trackers: storedTrackers)
-              categories[0] = updatedCategory
-          }
+    if !storedCategories.isEmpty {
+      categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
+      print("Decoded Categories: \(categories)")  // Log decoded categories
+    } else {
+      if let firstCategory = categories.first {
+        let updatedCategory = TrackerCategory(title: firstCategory.title, trackers: storedTrackers)
+        categories[0] = updatedCategory
       }
-      visibleCategory = categories
-      showTrackersInDate(currentDate)
-      collectionView.reloadData()
+    }
+    visibleCategory = categories
+    showTrackersInDate(currentDate)
+    collectionView.reloadData()
   }
-
-
 
   private func mainScreenContent(_ date: Date) {
     showTrackersInDate(date)
@@ -140,6 +138,8 @@ class TrackerViewController: UIViewController {
     collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
     collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+
+    collectionView.register(TrackerSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
   }
 
   private func reloadHolders() {
@@ -182,14 +182,12 @@ class TrackerViewController: UIViewController {
     }
   }
 
-  private func showTrackersInDate(_ date: Date) {
-      removeAllVisibleCategory()
-      let weekday = Calendar.current.component(.weekday, from: date)
-      appendTrackerInVisibleTrackers(weekday: weekday)
-      print("Visible Category: \(visibleCategory)")  // Log visibleCategory
-      collectionView.reloadData()
+  func showTrackersInDate(_ date: Date) {
+    removeAllVisibleCategory()
+    let weekday = Calendar.current.component(.weekday, from: date)
+    appendTrackerInVisibleTrackers(weekday: weekday)
+    collectionView.reloadData()
   }
-
 
   func appendTrackerInVisibleTrackers(weekday: Int) {
     var weekDayCase: Weekday = .monday
@@ -213,18 +211,25 @@ class TrackerViewController: UIViewController {
       break
     }
 
-    var trackers = [Tracker]()
-    for tracker in categories.first!.trackers {
+    guard let firstCategory = categories.first else {
+      print("No categories available")
+      return
+    }
+
+    var uniqueTrackers = [UUID: Tracker]()
+    for tracker in firstCategory.trackers {
       for day in tracker.schedule {
         if day == weekDayCase {
-          trackers.append(tracker)
+          uniqueTrackers[tracker.id] = tracker
         }
       }
     }
+
+    let trackers = Array(uniqueTrackers.values)
     let category = TrackerCategory(title: .usefull, trackers: trackers)
     visibleCategory.append(category)
-    print("Appended Trackers: \(trackers)")  // Log appended trackers
   }
+
 
   func removeAllVisibleCategory() {
     visibleCategory.removeAll()
@@ -281,28 +286,28 @@ extension TrackerViewController: UICollectionViewDataSource {
   }
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      let items = visibleCategory[section].trackers.count
-      print("numberOfItemsInSection \(section): \(items)")
-      return items
+    let items = visibleCategory[section].trackers.count
+    print("numberOfItemsInSection \(section): \(items)")
+    return items
   }
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-      guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? TrackerCollectionViewCell else { return UICollectionViewCell() }
-      let tracker = getTrackerDetails(section: indexPath.section, item: indexPath.item)
-      print("Configuring cell for tracker: \(tracker)")
-      cell.delegate = self
-      let isCompletedToday = checkIsTrackerCompletedToday(id: tracker.id)
-      let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
-      cell.configureCell(tracker: tracker,
-                         isCompletedToday: isCompletedToday,
-                         completedDays: completedDays,
-                         indexPath: indexPath)
-      if datePicker.date > Date() {
-          cell.plusButton.isHidden = true
-      }  else {
-          cell.plusButton.isHidden = false
-      }
-      return cell
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? TrackerViewCell else { return UICollectionViewCell() }
+    let tracker = getTrackerDetails(section: indexPath.section, item: indexPath.item)
+    print("Configuring cell for tracker: \(tracker)")
+    cell.delegate = self
+    let isCompletedToday = checkIsTrackerCompletedToday(id: tracker.id)
+    let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
+    cell.configureCell(tracker: tracker,
+                       isCompletedToday: isCompletedToday,
+                       completedDays: completedDays,
+                       indexPath: indexPath)
+    if datePicker.date > Date() {
+      cell.plusButton.isHidden = true
+    }  else {
+      cell.plusButton.isHidden = false
+    }
+    return cell
   }
 }
 
@@ -348,15 +353,30 @@ extension TrackerViewController: TrackerDoneDelegate {
 
 extension TrackerViewController: NewTrackerToTrackerVcDelegate {
   func didDelegateNewTracker(_ tracker: Tracker) {
-      print("didCreateNewHabit asked")
-      createNewTracker(tracker: tracker)
-      if let _ = trackerStore.addNewTracker(from: tracker) {
-          trackerCategoryStore.createCategoryAndTracker(tracker: tracker, with: CategoryList.usefull.rawValue)
-      } else {
-          print("Failed to save tracker")
-      }
+    print("didCreateNewHabit asked")
+    createNewTracker(tracker: tracker)
+    if let _ = trackerStore.addNewTracker(from: tracker) {
+      trackerCategoryStore.createCategoryAndTracker(tracker: tracker, with: CategoryList.usefull.rawValue)
+    } else {
+      print("Failed to save tracker")
+    }
 
-      mainScreenContent(Date())
+    mainScreenContent(Date())
   }
 
 }
+
+extension TrackerViewController {
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
+
+    let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! TrackerSectionHeaderView
+    headerView.titleLabel.text = getTitleForSection(sectionNumber: indexPath.section)
+    return headerView
+  }
+
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return CGSize(width: collectionView.bounds.width, height: 50)
+  }
+}
+

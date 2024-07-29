@@ -34,24 +34,24 @@ final class TrackerRecordStore {
         print("Failed to save context: \(error)")
     }
   }
-
-  func fetchAllRecords() -> [TrackerRecorder] {
-    let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-    do {
-      let trackerRecords = try context.fetch(fetchRequest)
-      return trackerRecords.map { TrackerRecorder(id: $0.id ?? UUID(), date: $0.date ?? Date()) }
-    } catch {
-      print("Failed to fetch tracker records: \(error)")
-      return []
-    }
-  }
-
-  func deleteRecord(for trackerRecord: TrackerRecorder) {
-    let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
-    fetchRequest.predicate = NSPredicate(format: "id == %@ AND date == %@", trackerRecord.id as CVarArg, trackerRecord.date as CVarArg)
-    if let result = try? context.fetch(fetchRequest), let recordToDelete = result.first {
-      context.delete(recordToDelete)
-      try? context.save()
-    }
-  }
+//
+//  func fetchAllRecords() -> [TrackerRecorder] {
+//    let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+//    do {
+//      let trackerRecords = try context.fetch(fetchRequest)
+//      return trackerRecords.map { TrackerRecorder(id: $0.id ?? UUID(), date: $0.date ?? Date()) }
+//    } catch {
+//      print("Failed to fetch tracker records: \(error)")
+//      return []
+//    }
+//  }
+//
+//  func deleteRecord(for trackerRecord: TrackerRecorder) {
+//    let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
+//    fetchRequest.predicate = NSPredicate(format: "id == %@ AND date == %@", trackerRecord.id as CVarArg, trackerRecord.date as CVarArg)
+//    if let result = try? context.fetch(fetchRequest), let recordToDelete = result.first {
+//      context.delete(recordToDelete)
+//      try? context.save()
+//    }
+//  }
 }

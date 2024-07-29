@@ -31,12 +31,6 @@ final class TrackerStore {
     newTracker.emoji = tracker.emoji
     newTracker.schedule = tracker.schedule as NSArray?
 
-    do {
-        try context.save()  // Save the context after adding the tracker
-    } catch {
-        print("Failed to save context: \(error)")
-    }
-
     return newTracker
   }
 
