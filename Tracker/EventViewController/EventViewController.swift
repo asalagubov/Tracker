@@ -15,7 +15,7 @@ protocol EventViewControllerDelegate: AnyObject {
 class EventViewController: UIViewController {
 
   let tableList = ["Категория"]
-  let emojiList = ["🙂","😻","🌺","🐶","❤️","😇","😡","🥶","🤔","🙌","🍔","🥦","🏓","🥇","🎸","🏝","😪"]
+  let emojiList = ["🙂","😻","🌺","🐶","❤️","😇","😱","😡","🥶","🤔","🙌","🍔","🥦","🏓","🥇","🎸","🏝","😪"]
   let colorList: [UIColor] = [.cSelection1,.cSelection2,.cSelection3,.cSelection4,.cSelection5,.cSelection6,.cSelection7,.cSelection8,.cSelection9,.cSelection10,.cSelection11,.cSelection12,.cSelection13,.cSelection14,.cSelection15,.cSelection16,.cSelection17,.cSelection18]
   let textField = UITextField()
   let stackView = UIStackView()
@@ -24,6 +24,9 @@ class EventViewController: UIViewController {
   let cancelButton = UIButton()
   let emojiCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
   let colorCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+
+  let scrollView = UIScrollView()
+  let contentView = UIView()
 
   private var selectedCategory : TrackerCategory?
   private var selectedEmoji: String?
@@ -45,10 +48,31 @@ class EventViewController: UIViewController {
     setupColorCollectionView()
     createTable()
     setupConstraint()
+    setupScrollView()
   }
 
   private func backGround() {
     view.backgroundColor = .ypWhite
+  }
+
+  private func setupScrollView() {
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    contentView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(scrollView)
+    scrollView.addSubview(contentView)
+
+    NSLayoutConstraint.activate([
+      scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+      scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+      contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+      contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+      contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+      contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+      contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+    ])
   }
 
   private func setupEventView() {
@@ -65,7 +89,7 @@ class EventViewController: UIViewController {
     textField.delegate = self
     textField.translatesAutoresizingMaskIntoConstraints = false
 
-    view.addSubview(textField)
+    contentView.addSubview(textField)
   }
 
   private func setupStackView() {
@@ -74,7 +98,7 @@ class EventViewController: UIViewController {
     stackView.spacing = 8
     stackView.translatesAutoresizingMaskIntoConstraints = false
 
-    view.addSubview(stackView)
+    contentView.addSubview(stackView)
   }
 
   private func setupCancelButton() {
@@ -120,11 +144,13 @@ class EventViewController: UIViewController {
 
     emojiCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "emojiCell")
 
-    view.addSubview(emojiCollectionView)
+    contentView.addSubview(emojiCollectionView)
   }
 
   private func setupColorCollectionView() {
     let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .vertical
+    layout.sectionInset = UIEdgeInsets(top: 10, left: 6, bottom: 0, right: 5)
 
     colorCollectionView.collectionViewLayout = layout
     colorCollectionView.dataSource = self
@@ -132,48 +158,73 @@ class EventViewController: UIViewController {
     colorCollectionView.backgroundColor = .clear
     colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
 
-    colorCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorCell")
+    colorCollectionView.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell") // Регистрация ColorCell
 
-    view.addSubview(colorCollectionView)
+    contentView.addSubview(colorCollectionView)
   }
 
+
   private func setupConstraint() {
+    let emojiLabel = UILabel()
+    emojiLabel.text = "Emoji"
+    emojiLabel.font = .systemFont(ofSize: 19, weight: .bold)
+    emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+
+    let colorLabel = UILabel()
+    colorLabel.text = "Цвет"
+    colorLabel.font = .systemFont(ofSize: 19, weight: .bold)
+    colorLabel.translatesAutoresizingMaskIntoConstraints = false
+
+    contentView.addSubview(emojiLabel)
+    contentView.addSubview(colorLabel)
+
     NSLayoutConstraint.activate([
       textField.heightAnchor.constraint(equalToConstant: 75),
-      textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-      textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-      textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+      textField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+      textField.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
 
-      stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-      stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-
-      cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-      cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      cancelButton.heightAnchor.constraint(equalToConstant: 60),
-      cancelButton.widthAnchor.constraint(equalToConstant: 166),
-
-      createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-      createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      createButton.heightAnchor.constraint(equalToConstant: 60),
-      createButton.widthAnchor.constraint(equalToConstant: 166),
-
-      tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-      tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+      tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
       tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
       tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)),
 
-      emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
-      emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-      emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      emojiCollectionView.heightAnchor.constraint(equalToConstant: 50),
+      emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 24),
+      emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
+      emojiLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
-      colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 24),
-      colorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-      colorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-      colorCollectionView.heightAnchor.constraint(equalToConstant: 50)
+      emojiCollectionView.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 10),
+      emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+      emojiCollectionView.heightAnchor.constraint(equalToConstant: calculateCollectionViewHeight(for: emojiList.count, itemsPerRow: 6, itemHeight: 60)),
+
+      colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 24),
+      colorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
+      colorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+
+      colorCollectionView.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 10),
+      colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+      colorCollectionView.heightAnchor.constraint(equalToConstant: calculateCollectionViewHeight(for: colorList.count, itemsPerRow: 6, itemHeight: 60)),
+
+      cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+      cancelButton.topAnchor.constraint(equalTo: colorCollectionView.bottomAnchor, constant: 24),
+      cancelButton.heightAnchor.constraint(equalToConstant: 60),
+      cancelButton.widthAnchor.constraint(equalToConstant: (view.frame.width / 2) - 30),
+
+      createButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+      createButton.topAnchor.constraint(equalTo: colorCollectionView.bottomAnchor, constant: 24),
+      createButton.heightAnchor.constraint(equalToConstant: 60),
+      createButton.widthAnchor.constraint(equalToConstant: (view.frame.width / 2) - 30),
+
+      createButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
     ])
+  }
+
+  private func calculateCollectionViewHeight(for itemCount: Int, itemsPerRow: Int, itemHeight: CGFloat) -> CGFloat {
+    let rows = ceil(Double(itemCount) / Double(itemsPerRow))
+    return CGFloat(rows) * itemHeight
   }
 
   private func createTable() {
@@ -183,12 +234,11 @@ class EventViewController: UIViewController {
     tableView.separatorStyle = .singleLine
     tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     tableView.rowHeight = 76
-    tableView.rowHeight = 76
     tableView.backgroundColor = .ypBackground
     tableView.isScrollEnabled = false
     tableView.translatesAutoresizingMaskIntoConstraints = false
 
-    view.addSubview(tableView)
+    contentView.addSubview(tableView)
   }
 
   func checkCreateButtonValidation() {
@@ -211,9 +261,9 @@ class EventViewController: UIViewController {
   @objc func create(_ sender: UIButton) {
     print("Create")
     let newTracker = Tracker(id: UUID(),
-                             title: self.enteredTrackerName,
-                             color: .cSelection2,
-                             emoji: "☠️",
+                             title: enteredTrackerName,
+                             color: selectedColor ?? .cSelection1,
+                             emoji: selectedEmoji ?? "🍔",
                              schedule: [Weekday.monday,
                                         Weekday.tuesday,
                                         Weekday.wednesday,
@@ -288,7 +338,10 @@ extension EventViewController: UITextFieldDelegate {
   }
 }
 
-extension EventViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+
+
+extension EventViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     if collectionView == emojiCollectionView {
       return emojiList.count
@@ -310,20 +363,39 @@ extension EventViewController: UICollectionViewDataSource, UICollectionViewDeleg
       emojiLabel.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor).isActive = true
       return cell
     } else {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
-      cell.backgroundColor = colorList[indexPath.row]
-      cell.layer.cornerRadius = 8
-      cell.layer.masksToBounds = true
+      guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else {
+        fatalError("Unexpected cell type")
+      }
+      let color = colorList[indexPath.row]
+      cell.configure(with: color, isSelected: color == selectedColor)
       return cell
     }
   }
 
+
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if collectionView == emojiCollectionView {
-      selectedEmoji = emojiList[indexPath.row]
+      if selectedEmoji == emojiList[indexPath.row] {
+        selectedEmoji = nil
+      } else {
+        selectedEmoji = emojiList[indexPath.row]
+      }
+
+      // Обновляем вид ячеек для подсветки выбранного смайлика
+      for cell in collectionView.visibleCells {
+        cell.contentView.backgroundColor = .clear
+      }
+      if let cell = collectionView.cellForItem(at: indexPath), selectedEmoji != nil {
+        cell.contentView.backgroundColor = .ypBackground
+        cell.layer.cornerRadius = 16
+        cell.layer.masksToBounds = true
+      }
     } else {
-      selectedColor = colorList[indexPath.row]
+      let color = colorList[indexPath.row]
+      selectedColor = (selectedColor == color) ? nil : color
+      colorCollectionView.reloadData()
     }
     checkCreateButtonValidation()
   }
 }
+

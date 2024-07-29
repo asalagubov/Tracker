@@ -155,6 +155,8 @@ class HabitViewController: UIViewController {
   private func setupColorCollectionView() {
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .vertical
+    layout.sectionInset = UIEdgeInsets(top: 10, left: 6, bottom: 0, right: 5)
+
 
     colorCollectionView.collectionViewLayout = layout
     colorCollectionView.dataSource = self
@@ -162,7 +164,7 @@ class HabitViewController: UIViewController {
     colorCollectionView.backgroundColor = .clear
     colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
 
-    colorCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorCell")
+    colorCollectionView.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell") // Регистрация ColorCell
 
     contentView.addSubview(colorCollectionView)
   }
@@ -194,7 +196,7 @@ class HabitViewController: UIViewController {
       tableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * tableList.count)),
 
       emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 24),
-      emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
       emojiLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
       emojiCollectionView.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 10),
@@ -203,7 +205,7 @@ class HabitViewController: UIViewController {
       emojiCollectionView.heightAnchor.constraint(equalToConstant: calculateCollectionViewHeight(for: emojiList.count, itemsPerRow: 6, itemHeight: 60)),
 
       colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 24),
-      colorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+      colorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 26),
       colorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
       colorCollectionView.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 10),
@@ -352,7 +354,8 @@ extension HabitViewController: SelectedScheduleDelegate {
   }
 }
 
-extension HabitViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension HabitViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     if collectionView == emojiCollectionView {
       return emojiList.count
@@ -374,13 +377,15 @@ extension HabitViewController: UICollectionViewDataSource, UICollectionViewDeleg
       emojiLabel.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor).isActive = true
       return cell
     } else {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
-      cell.backgroundColor = colorList[indexPath.row]
-      cell.layer.cornerRadius = 8
-      cell.layer.masksToBounds = true
+      guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else {
+        fatalError("Unexpected cell type")
+      }
+      let color = colorList[indexPath.row]
+      cell.configure(with: color, isSelected: color == selectedColor)
       return cell
     }
   }
+
 
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if collectionView == emojiCollectionView {
@@ -400,22 +405,11 @@ extension HabitViewController: UICollectionViewDataSource, UICollectionViewDeleg
         cell.layer.masksToBounds = true
       }
     } else {
-      if selectedColor == colorList[indexPath.row] {
-        selectedColor = nil
-      } else {
-        selectedColor = colorList[indexPath.row]
-      }
-
-      // Обновляем вид ячеек для подсветки выбранного цвета
-      for cell in collectionView.visibleCells {
-        cell.contentView.backgroundColor = .clear
-      }
-      if let cell = collectionView.cellForItem(at: indexPath), selectedColor != nil {
-        cell.layer.borderWidth = 4
-        cell.layer.cornerRadius = 12
-        cell.layer.borderColor = selectedColor?.withAlphaComponent(0.4).cgColor
-      }
+      let color = colorList[indexPath.row]
+      selectedColor = (selectedColor == color) ? nil : color
+      colorCollectionView.reloadData()
     }
     checkCreateButtonValidation()
   }
 }
+
