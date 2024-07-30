@@ -61,18 +61,29 @@ class TrackerViewController: UIViewController {
     let storedCategories = trackerCategoryStore.fetchAllCategories()
     print("Loaded Categories: \(storedCategories.map { $0.title })")  // Log loaded categories
 
+    // Загрузка выполненных трекеров из хранилища
+    let storedRecords = trackerRecordStore.fetchAllRecords()
+    completedTrackers = storedRecords.map { TrackerRecorder(id: $0.id, date: $0.date) }
+    print("Loaded Completed Trackers: \(completedTrackers)")  // Log loaded completed trackers
+
+    // Восстановление категорий
     if !storedCategories.isEmpty {
-      categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
-      print("Decoded Categories: \(categories)")  // Log decoded categories
+        categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
+        print("Decoded Categories: \(categories)")  // Log decoded categories
     } else {
-      if let firstCategory = categories.first {
-        let updatedCategory = TrackerCategory(title: firstCategory.title, trackers: storedTrackers)
-        categories[0] = updatedCategory
+          // Если категории пусты, создаем категорию на основе первой трекера
+        if let firstCategory = categories.first {
+          let updatedCategory = TrackerCategory(title: firstCategory.title, trackers: storedTrackers)
+          categories[0] = updatedCategory
+          }
       }
-    }
-    visibleCategory = categories
-    showTrackersInDate(currentDate)
-    collectionView.reloadData()
+
+      // Устанавливаем видимую категорию и отображаем трекеры для текущей даты
+      visibleCategory = categories
+      showTrackersInDate(currentDate)
+
+      // Перезагружаем collectionView для отображения данных
+      collectionView.reloadData()
   }
 
   private func mainScreenContent(_ date: Date) {
@@ -341,16 +352,22 @@ extension TrackerViewController: TrackerDoneDelegate {
     trackerRecordStore.addNewRecord(from: trackerRecord)
     collectionView.reloadItems(at: [indexPath])
   }
-
+  
   func uncompleteTracker(id: UUID, indexPath: IndexPath) {
-    completedTrackers.removeAll { trackerRecord in
-      let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-      return trackerRecord.id == id && isSameDay
+    if let index = completedTrackers.firstIndex(where: { $0.id == id }) {
+      let trackerRecord = completedTrackers[index]
+      
+      // Удаляем из массива
+      completedTrackers.remove(at: index)
+      
+      // Удаляем из хранилища данных
+      trackerRecordStore.deleteRecord(for: trackerRecord)
+      
+      // Обновляем интерфейс
+      collectionView.reloadItems(at: [indexPath])
     }
-    collectionView.reloadItems(at: [indexPath])
   }
 }
-
 extension TrackerViewController: NewTrackerToTrackerVcDelegate {
   func didDelegateNewTracker(_ tracker: Tracker) {
     print("didCreateNewHabit asked")
