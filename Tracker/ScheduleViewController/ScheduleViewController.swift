@@ -51,7 +51,9 @@ class ScheduleViewController: UIViewController {
     tableView.dataSource = self
     
     tableView.register(WeekDaysSelectCell.self, forCellReuseIdentifier: "WeekDaysSelectCell")
-    tableView.rowHeight = 75
+    tableView.rowHeight = 76
+    tableView.separatorStyle = .singleLine
+    tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     let tableCount : CGFloat = CGFloat(daysOfWeekUI.count)
     tableView.allowsSelection = false
     tableView.layer.cornerRadius = 16
