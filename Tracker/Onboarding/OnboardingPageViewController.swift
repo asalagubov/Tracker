@@ -74,8 +74,9 @@ final class OnboardingPageViewController: UIViewController {
   }
 
   @objc private func finishOnboarding() {
-    if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-      sceneDelegate.window?.rootViewController = TabBarController()
-    }
+      UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+      if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+          sceneDelegate.window?.rootViewController = TabBarController()
+      }
   }
 }
