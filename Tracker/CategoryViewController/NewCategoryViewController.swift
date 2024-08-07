@@ -18,7 +18,7 @@ class NewCategoryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Категория"
+        title = "Новая категория"
         backGround()
         setupCategoryView()
         addButton()
@@ -29,7 +29,6 @@ class NewCategoryViewController: UIViewController {
     }
 
     private func setupCategoryView() {
-        title = "Новая категория"
         textField.backgroundColor = .ypBackground
         textField.textColor = .ypBlack
         textField.placeholder = "Введите название категории"
@@ -49,7 +48,6 @@ class NewCategoryViewController: UIViewController {
         textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        textField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
 
     private func addButton() {

@@ -8,7 +8,7 @@ import Foundation
 import UIKit
 
 protocol CategoryViewControllerDelegate: AnyObject {
-  func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
+    func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
 }
 
 class CategoryViewController: UIViewController, NewCategoryViewControllerDelegate {
@@ -22,7 +22,7 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Категория"
+        title = "Категории"
         backGround()
         setupCategoryView()
         addButton()
@@ -34,8 +34,6 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
     }
 
     private func setupCategoryView() {
-        navigationItem.hidesBackButton = true
-
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
@@ -80,9 +78,9 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
         tableView.dataSource = self
         tableView.layer.cornerRadius = 16
         tableView.rowHeight = 75
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .ypBackground
+        tableView.backgroundColor = .ypWhite
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(tableView)
@@ -90,7 +88,7 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        tableView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -16).isActive = true
 
         button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
@@ -106,6 +104,7 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
         }
         categories = savedCategories
         tableView.reloadData()
+        mainScreenContent()  // Обновите состояние отображения
     }
 
     @objc func addCategory() {
@@ -114,13 +113,16 @@ class CategoryViewController: UIViewController, NewCategoryViewControllerDelegat
         navigationController?.pushViewController(addNewCategoryVC, animated: true)
     }
 
-    func newCategoryScreen(_ screen: NewCategoryViewController, didAddCategoryWithTitle title: String) {
-        let newCategory = TrackerCategory(title: title, trackers: [])
-        trackerCategoryStore.createCategory(newCategory)
-        categories.append(newCategory)
-        mainScreenContent()
-        tableView.reloadData()
-    }
+  func newCategoryScreen(_ screen: NewCategoryViewController, didAddCategoryWithTitle title: String) {
+      let newCategory = TrackerCategory(title: title, trackers: [])
+      trackerCategoryStore.createCategory(newCategory)
+      categories.append(newCategory)
+      tableView.reloadData()
+      mainScreenContent()  // Обновите состояние отображения
+
+      // Уведомить делегата, если делегат установлен
+      delegate?.categoryScreen(self, didSelectedCategory: newCategory)
+  }
 
     private func mainScreenContent() {
         if categories.isEmpty {
