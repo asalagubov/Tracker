@@ -13,7 +13,7 @@ protocol DismissProtocol: AnyObject {
 }
 
 protocol NewTrackerToTrackerVcDelegate: AnyObject {
-  func didDelegateNewTracker(_ tracker: Tracker)
+  func didDelegateNewTracker(_ tracker: Tracker, _ category: String)
 }
 
 class NewTrackerViewController: UIViewController {
@@ -94,15 +94,15 @@ extension NewTrackerViewController: DismissProtocol {
 }
 
 extension NewTrackerViewController: HabitViewControllerDelegate{
-  func didCreateNewHabit(_ tracker: Tracker) {
-    habitDelegate?.didDelegateNewTracker(tracker)
+  func didCreateNewHabit(_ tracker: Tracker, _ category: String) {
+    habitDelegate?.didDelegateNewTracker(tracker, category)
     dismissDelegate?.dismissView()
   }
 }
 
 extension NewTrackerViewController: EventViewControllerDelegate{
-  func didCreateNewEvent(_ tracker: Tracker) {
-    eventDelegate?.didDelegateNewTracker(tracker)
+  func didCreateNewEvent(_ tracker: Tracker, _ category: String) {
+    eventDelegate?.didDelegateNewTracker(tracker, category)
     dismissDelegate?.dismissView()
   }
 }
