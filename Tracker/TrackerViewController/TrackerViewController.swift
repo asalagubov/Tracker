@@ -7,9 +7,9 @@
 
 import UIKit
 
-enum CategoryList: String {
-  case usefull = "Важное"
-}
+//enum CategoryList: String {
+//  case usefull = "Важное"
+//}
 
 protocol ReloadCollectionProtocol: AnyObject {
   func reloadCollection()
@@ -19,7 +19,7 @@ class TrackerViewController: UIViewController {
 
   var completedTrackers: [TrackerRecorder] = []
   var visibleCategory: [TrackerCategory] = []
-  var categories: [TrackerCategory] = [TrackerCategory(title: .usefull, trackers: [])]
+  var categories: [TrackerCategory] = []
 
   private let trackerStore = TrackerStore()
   private let trackerCategoryStore = TrackerCategoryStore()
@@ -68,23 +68,27 @@ class TrackerViewController: UIViewController {
 
     // Восстановление категорий
     if !storedCategories.isEmpty {
-        categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
-        print("Decoded Categories: \(categories)")  // Log decoded categories
+      categories = storedCategories.compactMap { trackerCategoryStore.decodingCategory(from: $0) }
+      print("Decoded Categories: \(categories)")  // Log decoded categories
     } else {
-          // Если категории пусты, создаем категорию на основе первой трекера
-        if let firstCategory = categories.first {
-          let updatedCategory = TrackerCategory(title: firstCategory.title, trackers: storedTrackers)
-          categories[0] = updatedCategory
-          }
+      // Если категории пусты, создаем категорию на основе первой трекера
+      if !storedTrackers.isEmpty {
+        let newCategory = TrackerCategory(title: "Default Category", trackers: storedTrackers)
+        categories.append(newCategory)
       }
+    }
 
-      // Устанавливаем видимую категорию и отображаем трекеры для текущей даты
-      visibleCategory = categories
-      showTrackersInDate(currentDate)
+    // Устанавливаем видимую категорию и отображаем трекеры для текущей даты
+    visibleCategory = categories
+    showTrackersInDate(currentDate)
 
-      // Перезагружаем collectionView для отображения данных
-      collectionView.reloadData()
+    // Перезагружаем collectionView для отображения данных
+    collectionView.reloadData()
+
+    // Обновляем видимость элементов
+    reloadHolders()
   }
+
 
   private func mainScreenContent(_ date: Date) {
     showTrackersInDate(date)
@@ -195,12 +199,16 @@ class TrackerViewController: UIViewController {
 
   func showTrackersInDate(_ date: Date) {
     removeAllVisibleCategory()
-    let weekday = Calendar.current.component(.weekday, from: date)
-    appendTrackerInVisibleTrackers(weekday: weekday)
+
+    for category in categories {
+      let weekday = Calendar.current.component(.weekday, from: date)
+      appendTrackers(for: category, weekday: weekday)
+    }
+
     collectionView.reloadData()
   }
 
-  func appendTrackerInVisibleTrackers(weekday: Int) {
+  private func appendTrackers(for category: TrackerCategory, weekday: Int) {
     var weekDayCase: Weekday = .monday
 
     switch weekday {
@@ -222,24 +230,18 @@ class TrackerViewController: UIViewController {
       break
     }
 
-    guard let firstCategory = categories.first else {
-      print("No categories available")
-      return
-    }
-
     var uniqueTrackers = [UUID: Tracker]()
-    for tracker in firstCategory.trackers {
-      for day in tracker.schedule {
-        if day == weekDayCase {
-          uniqueTrackers[tracker.id] = tracker
-        }
+    for tracker in category.trackers {
+      if tracker.schedule.contains(weekDayCase) {
+        uniqueTrackers[tracker.id] = tracker
       }
     }
 
     let trackers = Array(uniqueTrackers.values)
-    let category = TrackerCategory(title: .usefull, trackers: trackers)
-    visibleCategory.append(category)
+    let updatedCategory = TrackerCategory(title: category.title, trackers: trackers)
+    visibleCategory.append(updatedCategory)
   }
+
 
 
   func removeAllVisibleCategory() {
@@ -247,26 +249,39 @@ class TrackerViewController: UIViewController {
   }
 
   func createNewTracker(tracker: Tracker) {
-    var trackers: [Tracker] = []
-    guard let list = categories.first else {return}
-    for tracker in list.trackers{
+      var trackers: [Tracker] = []
+      guard let list = categories.first else { return }
+      for tracker in list.trackers {
+          trackers.append(tracker)
+      }
       trackers.append(tracker)
-    }
-    trackers.append(tracker)
-    categories = [TrackerCategory(title: .usefull, trackers: trackers)]
-    mainScreenContent(currentDate)
+      categories = [TrackerCategory(title: list.title, trackers: trackers)]
+      mainScreenContent(currentDate)
+      collectionView.reloadData()  // Добавьте эту строку
   }
 
-  func createNewCategory(newCategoty: TrackerCategory) {
-    categories.append(newCategoty)
+
+  func createNewCategory(_ category: TrackerCategory) {
+    // Добавляем новую категорию в массив
+    categories.append(category)
+
+    // Устанавливаем видимую категорию
+    visibleCategory = categories
+
+    // Обновляем отображение
+    showTrackersInDate(currentDate)
   }
+
 
   func checkIsCategoryEmpty() -> Bool {
-    categories.isEmpty
+    return categories.isEmpty || categories[0].trackers.isEmpty
   }
 
   func checkIsTrackerRepoEmpty() -> Bool {
-    categories[0].trackers.isEmpty
+    guard !categories.isEmpty else {
+      return true
+    }
+    return categories[0].trackers.isEmpty
   }
 
   func checkIsVisibleEmpty() -> Bool {
@@ -285,7 +300,7 @@ class TrackerViewController: UIViewController {
   }
 
   func getTitleForSection(sectionNumber: Int) -> String {
-    visibleCategory[sectionNumber].title.rawValue
+    visibleCategory[sectionNumber].title
   }
 }
 extension TrackerViewController: UICollectionViewDataSource {
@@ -352,34 +367,37 @@ extension TrackerViewController: TrackerDoneDelegate {
     trackerRecordStore.addNewRecord(from: trackerRecord)
     collectionView.reloadItems(at: [indexPath])
   }
-  
+
   func uncompleteTracker(id: UUID, indexPath: IndexPath) {
     if let index = completedTrackers.firstIndex(where: { $0.id == id }) {
       let trackerRecord = completedTrackers[index]
-      
+
       // Удаляем из массива
       completedTrackers.remove(at: index)
-      
+
       // Удаляем из хранилища данных
       trackerRecordStore.deleteRecord(for: trackerRecord)
-      
+
       // Обновляем интерфейс
       collectionView.reloadItems(at: [indexPath])
     }
   }
 }
 extension TrackerViewController: NewTrackerToTrackerVcDelegate {
-  func didDelegateNewTracker(_ tracker: Tracker) {
+  func didDelegateNewTracker(_ tracker: Tracker, _ category: String) {
     print("didCreateNewHabit asked")
     createNewTracker(tracker: tracker)
+
     if let _ = trackerStore.addNewTracker(from: tracker) {
-      trackerCategoryStore.createCategoryAndTracker(tracker: tracker, with: CategoryList.usefull.rawValue)
+      trackerCategoryStore.createCategoryAndTracker(tracker: tracker, with: category)
     } else {
       print("Failed to save tracker")
     }
 
-    mainScreenContent(Date())
+    // Обновите список категорий и трекеров
+    loadTrackersFromCoreData()
   }
+
 
 }
 
@@ -397,3 +415,12 @@ extension TrackerViewController {
   }
 }
 
+extension TrackerViewController: CategoryViewControllerDelegate {
+  func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory) {
+    // Обновите список категорий в TrackerViewController
+    categories.append(category)
+    visibleCategory = categories
+    showTrackersInDate(currentDate)
+    reloadHolders()
+  }
+}

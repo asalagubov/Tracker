@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol EventViewControllerDelegate: AnyObject {
-  func didCreateNewEvent(_ tracker: Tracker)
+  func didCreateNewEvent(_ tracker: Tracker, _ category: String)
 }
 
 class EventViewController: UIViewController {
@@ -273,7 +273,7 @@ class EventViewController: UIViewController {
                                         Weekday.sunday])
 
     self.trackerVC.createNewTracker(tracker: newTracker)
-    self.delegate?.didCreateNewEvent(newTracker)
+    self.delegate?.didCreateNewEvent(newTracker, selectedCategory?.title ?? "")
     self.dismiss(animated: true)
   }
 }
@@ -287,7 +287,7 @@ extension EventViewController: UITableViewDelegate, UITableViewDataSource {
     cell.accessoryType = .disclosureIndicator
     cell.backgroundColor = .ypBackground
     cell.textLabel?.text = tableList[indexPath.row]
-    cell.detailTextLabel?.text = selectedCategory?.title.rawValue
+    cell.detailTextLabel?.text = selectedCategory?.title
     cell.detailTextLabel?.textColor = .ypGray
     cell.detailTextLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     return cell
