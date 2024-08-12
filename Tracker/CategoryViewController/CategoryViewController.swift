@@ -11,7 +11,7 @@ protocol CategoryViewControllerDelegate: AnyObject {
     func categoryScreen(_ screen: CategoryViewController, didSelectedCategory category: TrackerCategory)
 }
 
-class CategoryViewController: UIViewController, NewCategoryViewControllerDelegate {
+final class CategoryViewController: UIViewController, NewCategoryViewControllerDelegate {
     weak var delegate: CategoryViewControllerDelegate?
     private var viewModel: CategoryViewModel!
 

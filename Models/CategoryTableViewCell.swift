@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CategoryTableViewCell: UITableViewCell {
+final class CategoryTableViewCell: UITableViewCell {
     static let reuseIdentifier = "CategoryTableViewCell"
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

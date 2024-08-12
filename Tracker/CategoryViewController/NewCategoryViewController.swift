@@ -70,7 +70,7 @@ class NewCategoryViewController: UIViewController {
         button.addTarget(self, action: #selector(addNewCategory), for: .touchUpInside)
     }
 
-    @objc func addNewCategory() {
+    @objc private func addNewCategory() {
         guard let categoryTitle = textField.text, !categoryTitle.isEmpty else {
             // Показываем ошибку или сообщение пользователю
             return
