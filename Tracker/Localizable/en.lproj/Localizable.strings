@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Alexander Salagubov on 14.08.2024.
+  
+*/
+
+//Onboarding
+"onboardScreen1" = "Отслеживайте только то, что хотите";
+"onboardScreen2" = "Даже если это не литры воды и йога";
+"onboardTitle" = "Вот это технологии!";
+
+//Main Screen
+"trakerTitle" = "Трекеры";
+"statisticTitle" = "Статистика";
+"searchTextFieldPlaceholder" = "Поиск";
+
+//Action Sheet
+"cancelButton" = "Отменить";
+"addButton" = "Cоздать";
+
+//Holders
+"trackersHolderLabel" = "Что будем отслеживать?";
+"trackersSearchLabel" = "Ничего не найдено";
+

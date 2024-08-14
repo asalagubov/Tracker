@@ -102,7 +102,7 @@ class EventViewController: UIViewController {
   }
 
   private func setupCancelButton() {
-    cancelButton.setTitle("Отменить", for: .normal)
+    cancelButton.setTitle("cancelButton", for: .normal)
     cancelButton.layer.cornerRadius = 16
     cancelButton.layer.masksToBounds = true
     cancelButton.backgroundColor = .clear

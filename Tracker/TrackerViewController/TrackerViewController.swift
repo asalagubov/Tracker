@@ -106,7 +106,7 @@ class TrackerViewController: UIViewController {
 
     let searchController = UISearchController()
     navigationItem.searchController = searchController
-    searchController.searchBar.placeholder = "Поиск"
+    searchController.searchBar.placeholder = localizedString(key:"searchTextFieldPlaceholder")
 
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
@@ -119,7 +119,7 @@ class TrackerViewController: UIViewController {
     stackView.addArrangedSubview(image)
 
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Что будем отслеживать?"
+    label.text = localizedString(key:"trackersHolderLabel")
     label.font = .systemFont(ofSize: 12, weight: .medium)
     stackView.addArrangedSubview(label)
 

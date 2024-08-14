@@ -56,7 +56,7 @@ final class OnboardingPageViewController: UIViewController {
   }
 
   private func setupFinishButton() {
-    finishButton.setTitle("Вот это технологии!", for: .normal)
+    finishButton.setTitle(localizedString(key:"onboardTitle"), for: .normal)
     finishButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
     finishButton.backgroundColor = .black
     finishButton.layer.cornerRadius = 16
