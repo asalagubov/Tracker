@@ -7,9 +7,6 @@
 
 import UIKit
 
-//enum CategoryList: String {
-//  case usefull = "Важное"
-//}
 
 protocol ReloadCollectionProtocol: AnyObject {
   func reloadCollection()
@@ -107,6 +104,7 @@ class TrackerViewController: UIViewController {
     let searchController = UISearchController()
     navigationItem.searchController = searchController
     searchController.searchBar.placeholder = localizedString(key:"searchTextFieldPlaceholder")
+    searchController.searchResultsUpdater = self
 
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .vertical
@@ -205,7 +203,8 @@ class TrackerViewController: UIViewController {
       appendTrackers(for: category, weekday: weekday)
     }
 
-    collectionView.reloadData()
+ //   collectionView.reloadData()
+    filterTrackers(for: navigationItem.searchController?.searchBar.text ?? "")
   }
 
   private func appendTrackers(for category: TrackerCategory, weekday: Int) {
@@ -335,6 +334,30 @@ extension TrackerViewController: UICollectionViewDataSource {
     }
     return cell
   }
+  func filterTrackers(for searchText: String) {
+      guard !searchText.isEmpty else {
+          visibleCategory = categories // Если поисковый запрос пуст, показываем все трекеры
+          collectionView.reloadData()
+          return
+      }
+
+      // Создаем новый массив категорий, содержащих отфильтрованные трекеры
+    visibleCategory = categories.compactMap { category -> TrackerCategory? in
+          let filteredTrackers = category.trackers.filter { tracker in
+              return tracker.title.lowercased().contains(searchText.lowercased()) // Поиск по заголовку трекера
+          }
+
+          // Если есть отфильтрованные трекеры, создаем новую категорию
+          if !filteredTrackers.isEmpty {
+              return TrackerCategory(title: category.title, trackers: filteredTrackers)
+          } else {
+              return nil
+          }
+      }
+
+      collectionView.reloadData()
+  }
+
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -423,4 +446,12 @@ extension TrackerViewController: CategoryViewControllerDelegate {
     showTrackersInDate(currentDate)
     reloadHolders()
   }
+}
+
+extension TrackerViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text {
+            filterTrackers(for: searchText)
+        }
+    }
 }
