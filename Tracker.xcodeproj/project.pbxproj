@@ -44,6 +44,7 @@
 		0CD1C23D2C6D2EF300FE767E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0CD1C23B2C6D2EF300FE767E /* Localizable.strings */; };
 		0CD1C2402C6D2F1100FE767E /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 0CD1C23E2C6D2F1100FE767E /* Localizable.stringsdict */; };
 		0CD1C2452C6D307700FE767E /* NSLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1C2442C6D307700FE767E /* NSLocalizedString.swift */; };
+		0CD1C2612C6FB65800FE767E /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD1C2602C6FB65800FE767E /* FilterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		0CD1C2432C6D2F2100FE767E /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		0CD1C2442C6D307700FE767E /* NSLocalizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLocalizedString.swift; sourceTree = "<group>"; };
 		0CD1C2482C6D3AA100FE767E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		0CD1C2602C6FB65800FE767E /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +207,7 @@
 		0CB9F05C2C2F053300EB65FC /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				0CD1C25F2C6FB64000FE767E /* FilterViewController */,
 				0CD1C23A2C6D2EA600FE767E /* Localizable */,
 				0C5FDC282C616C6900C61AED /* Onboarding */,
 				0CB9F05D2C2F053300EB65FC /* AppDelegate.swift */,
@@ -309,6 +312,14 @@
 				0CD1C2442C6D307700FE767E /* NSLocalizedString.swift */,
 			);
 			path = Localizable;
+			sourceTree = "<group>";
+		};
+		0CD1C25F2C6FB64000FE767E /* FilterViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0CD1C2602C6FB65800FE767E /* FilterViewController.swift */,
+			);
+			path = FilterViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -467,6 +478,7 @@
 				0CB9F05E2C2F053300EB65FC /* AppDelegate.swift in Sources */,
 				0C5FDBD32C53F12600C61AED /* UIColorMarshalling.swift in Sources */,
 				0CB9F0602C2F053300EB65FC /* SceneDelegate.swift in Sources */,
+				0CD1C2612C6FB65800FE767E /* FilterViewController.swift in Sources */,
 				0CCE47CA2C3FC4E40082CBC8 /* TrackerRepo.swift in Sources */,
 				0C5FDBD52C53F5BE00C61AED /* WeekdayArrayTransformer.swift in Sources */,
 				0C0BC0AF2C4FB55000B3B7D0 /* TrackerRecordStore.swift in Sources */,

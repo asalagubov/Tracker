@@ -13,6 +13,7 @@
 
 //Main Screen
 "trakerTitle" = "Трекеры";
+"filterButton" = "Фильтры";
 "statisticTitle" = "Статистика";
 "searchTextFieldPlaceholder" = "Поиск";
 
@@ -24,3 +25,9 @@
 "trackersHolderLabel" = "Что будем отслеживать?";
 "trackersSearchLabel" = "Ничего не найдено";
 
+//Filters
+"filterTitle" = "Фильтры";
+"allTrackers" = "Все трекеры";
+"todayTrackers" = "Трекеры на сегодня";
+"doneTrackers" = "Завершенные";
+"unDoneTrackers" = "Не завершенные";

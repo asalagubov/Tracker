@@ -14,6 +14,7 @@
 
 //Main Screen
 "trakerTitle" = "Trackers";
+"filterButton" = "Filters";
 "statisticTitle" = "Statistic";
 "searchTextFieldPlaceholder" = "Search";
 
@@ -24,3 +25,10 @@
 //Holders
 "trackersHolderLabel" = "What will we track?";
 "trackersSearchLabel" = "Nothing found";
+
+//Filters
+"filterTitle" = "Filters";
+"allTrackers" = "All trackers";
+"todayTrackers" = "Today trackers";
+"doneTrackers" = "Completed";
+"unDoneTrackers" = "Uncompleted";
