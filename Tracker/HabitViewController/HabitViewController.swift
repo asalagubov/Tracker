@@ -27,11 +27,11 @@ class HabitViewController: UIViewController {
   let scrollView = UIScrollView()
   let contentView = UIView()
 
-  private var selectedCategory: TrackerCategory?
-  private var selectedSchedule: [Weekday] = []
-  private var enteredEventName = ""
-  private var selectedEmoji: String?
-  private var selectedColor: UIColor?
+  var selectedCategory: TrackerCategory?
+  var selectedSchedule: [Weekday] = []
+  var enteredEventName = ""
+  var selectedEmoji: String?
+  var selectedColor: UIColor?
   weak var delegate: HabitViewControllerDelegate?
   weak var dismissDelegate: DismissProtocol?
   var trackerVC = TrackerViewController()
@@ -48,7 +48,17 @@ class HabitViewController: UIViewController {
     setupCreateButton()
     createTable()
     setupConstraint()
+
+    textField.text = enteredEventName
+    if let selectedEmoji = selectedEmoji, let emojiIndex = emojiList.firstIndex(of: selectedEmoji) {
+      emojiCollectionView.selectItem(at: IndexPath(item: emojiIndex, section: 0), animated: false, scrollPosition: [])
+    }
+    if let selectedColor = selectedColor, let colorIndex = colorList.firstIndex(of: selectedColor) {
+      colorCollectionView.selectItem(at: IndexPath(item: colorIndex, section: 0), animated: false, scrollPosition: [])
+    }
+    tableView.reloadData()
   }
+
 
   private func backGround() {
     view.backgroundColor = .ypWhite
@@ -396,7 +406,6 @@ extension HabitViewController: UICollectionViewDataSource, UICollectionViewDeleg
         selectedEmoji = emojiList[indexPath.row]
       }
 
-      // Обновляем вид ячеек для подсветки выбранного смайлика
       for cell in collectionView.visibleCells {
         cell.contentView.backgroundColor = .clear
       }
