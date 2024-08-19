@@ -417,7 +417,16 @@ extension TrackerViewController: UICollectionViewDataSource {
     
     collectionView.reloadData()
   }
-  
+
+  func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+      guard let cell = collectionView.cellForItem(at: indexPath) as? TrackerViewCell else {
+          return nil
+      }
+      let parameters = UIPreviewParameters()
+          let previewView = UITargetedPreview(view: cell.bodyView, parameters: parameters)
+      return previewView
+  }
+
   func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
     guard indexPaths.count > 0 else {
       return nil
@@ -508,10 +517,9 @@ extension TrackerViewController: UICollectionViewDataSource {
   
   
   private func editTracker(indexPath: IndexPath) {
-    analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
-    
+      analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
   }
-  
+
   private func deleteTracker(indexPath: IndexPath) {
     analyticsService.report(event: "click", params: ["screen": "Main", "item": "delete"])
     let actionSheet = UIAlertController(title: localizedString(key: "actionSheetTitle"), message: nil, preferredStyle: .actionSheet)

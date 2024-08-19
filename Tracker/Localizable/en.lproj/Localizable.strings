@@ -15,6 +15,7 @@
 "trakerTitle" = "Трекеры";
 "filterButton" = "Фильтры";
 "statisticTitle" = "Статистика";
+"statisticsPlugLabel" = "Анализировать пока нечего";
 "searchTextFieldPlaceholder" = "Поиск";
 
 //Action Sheet
@@ -42,3 +43,6 @@
 "actionSheetTitle" = "Уверены что хотите удалить трекер?";
 "deleteButton" = "Удалить";
 "cancelButton" = "Отменить";
+
+// Statistic
+"doneTrackersCount" = "Трекеров завершено";

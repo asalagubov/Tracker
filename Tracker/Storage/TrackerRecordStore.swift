@@ -76,4 +76,18 @@ final class TrackerRecordStore {
           print("Failed to delete record: \(error)")
       }
   }
+
+  func fetchRecords() -> [TrackerRecorder] {
+      guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return [] }
+      let managedContext = appDelegate.persistentContainer.viewContext
+      let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+          let trackerRecordCoreDataArray = try! managedContext.fetch(fetchRequest)
+          let trackerRecords = trackerRecordCoreDataArray.map { trackerRecordCoreData in
+              return TrackerRecorder(
+                  id: trackerRecordCoreData.id ?? UUID(),
+                  date: trackerRecordCoreData.date ?? Date()
+              )
+          }
+          return trackerRecords
+      }
 }

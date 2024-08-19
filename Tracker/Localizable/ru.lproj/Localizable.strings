@@ -16,6 +16,7 @@
 "trakerTitle" = "Trackers";
 "filterButton" = "Filters";
 "statisticTitle" = "Statistic";
+"statisticsPlugLabel" = "Nothing to analize";
 "searchTextFieldPlaceholder" = "Search";
 
 //Action Sheet
@@ -43,3 +44,6 @@
 "actionSheetTitle" = "Are you sure you want to delete this tracker?";
 "deleteButton" = "Delete";
 "cancelButton" = "Cancel";
+
+// Statistic
+"doneTrackersCount" = "Completed trackers";
