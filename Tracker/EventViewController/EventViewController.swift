@@ -270,7 +270,8 @@ class EventViewController: UIViewController {
                                         Weekday.thursday,
                                         Weekday.friday,
                                         Weekday.saturday,
-                                        Weekday.sunday])
+                                        Weekday.sunday],
+                            trackerCategory: selectedCategory?.title ?? "")
 
     self.trackerVC.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewEvent(newTracker, selectedCategory?.title ?? "")

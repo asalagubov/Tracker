@@ -255,7 +255,8 @@ class HabitViewController: UIViewController {
                              title: enteredEventName,
                              color: selectedColor ?? .cSelection1,
                              emoji: selectedEmoji ?? "🍔",
-                             schedule: selectedSchedule)
+                             schedule: selectedSchedule,
+                             trackerCategory: selectedCategory?.title ?? "")
 
     self.trackerVC.createNewTracker(tracker: newTracker)
     self.delegate?.didCreateNewHabit(newTracker, selectedCategory?.title ?? "")

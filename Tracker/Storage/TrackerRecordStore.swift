@@ -46,6 +46,20 @@ final class TrackerRecordStore {
     }
   }
 
+  func deleteAllRecordFor(tracker: Tracker) {
+      let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+      fetchRequest.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+      do {
+          let records = try context.fetch(fetchRequest)
+          for recordToDelete in records {
+              context.delete(recordToDelete)
+          }
+          try context.save()
+      } catch {
+          print("Error deleting records: \(error.localizedDescription)")
+      }
+  }
+
   func deleteRecord(for trackerRecord: TrackerRecorder) {
       let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
       fetchRequest.predicate = NSPredicate(format: "id == %@ AND date == %@", trackerRecord.id as CVarArg, trackerRecord.date as CVarArg)
