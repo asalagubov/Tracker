@@ -22,7 +22,7 @@ class NewTrackerViewController: UIViewController {
   weak var habitDelegate: NewTrackerToTrackerVcDelegate?
   weak var eventDelegate: NewTrackerToTrackerVcDelegate?
   weak var dismissDelegate: DismissProtocol?
-
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Создание трекера"

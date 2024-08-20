@@ -20,7 +20,7 @@
 
 //Action Sheet
 "cancelButton" = "Cancel";
-"addButton" = "create";
+"addButton" = "Сreate";
 
 //Holders
 "trackersHolderLabel" = "What will we track?";
