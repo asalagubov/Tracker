@@ -7,42 +7,42 @@
 */
 
 //Onboarding
-"onboardScreen1" = "Отслеживайте только то, что хотите";
-"onboardScreen2" = "Даже если это не литры воды и йога";
-"onboardTitle" = "Вот это технологии!";
+"onboardScreen1" = "Track only what you want";
+"onboardScreen2" = "Even if it's not liters of water and yoga";
+"onboardTitle" = "This is technology!";
 
 //Main Screen
-"trakerTitle" = "Трекеры";
-"filterButton" = "Фильтры";
-"statisticTitle" = "Статистика";
-"statisticsPlugLabel" = "Анализировать пока нечего";
-"searchTextFieldPlaceholder" = "Поиск";
+"trakerTitle" = "Trackers";
+"filterButton" = "Filters";
+"statisticTitle" = "Statistic";
+"statisticsPlugLabel" = "Nothing to analize";
+"searchTextFieldPlaceholder" = "Search";
 
 //Action Sheet
-"cancelButton" = "Отменить";
-"addButton" = "Cоздать";
+"cancelButton" = "Cancel";
+"addButton" = "create";
 
 //Holders
-"trackersHolderLabel" = "Что будем отслеживать?";
-"trackersSearchLabel" = "Ничего не найдено";
+"trackersHolderLabel" = "What will we track?";
+"trackersSearchLabel" = "Nothing found";
 
 //Filters
-"filterTitle" = "Фильтры";
-"allTrackers" = "Все трекеры";
-"todayTrackers" = "Трекеры на сегодня";
-"doneTrackers" = "Завершенные";
-"unDoneTrackers" = "Не завершенные";
+"filterTitle" = "Filters";
+"allTrackers" = "All trackers";
+"todayTrackers" = "Today trackers";
+"doneTrackers" = "Completed";
+"unDoneTrackers" = "Uncompleted";
 
 //Context menu
-"pin" = "Закрепить";
-"unpin" = "Открепить";
-"edit" = "Редактировать";
-"delete" = "Удалить";
+"pin" = "Pin";
+"unpin" = "Unpin";
+"edit" = "Edit";
+"delete" = "Delete";
 
 //Action Sheet
-"actionSheetTitle" = "Уверены что хотите удалить трекер?";
-"deleteButton" = "Удалить";
-"cancelButton" = "Отменить";
+"actionSheetTitle" = "Are you sure you want to delete this tracker?";
+"deleteButton" = "Delete";
+"cancelButton" = "Cancel";
 
 // Statistic
-"doneTrackersCount" = "Трекеров завершено";
+"doneTrackersCount" = "Completed trackers";

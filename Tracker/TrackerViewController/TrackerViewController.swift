@@ -121,6 +121,7 @@ class TrackerViewController: UIViewController {
   }
   
   private func setupTrackerView() {
+    analyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
     let plusButton = UIBarButtonItem(image: UIImage(named: "plus_button"), style: .plain, target: self, action: #selector(plusButtonTapped))
     plusButton.tintColor = .ypBlack
     navigationItem.leftBarButtonItem = plusButton
@@ -507,6 +508,7 @@ extension TrackerViewController: UICollectionViewDataSource {
   }
   
   private func editTracker(indexPath: IndexPath) {
+    analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
     let trackerToEdit = visibleCategory[indexPath.section].trackers[indexPath.row]
     let habitViewController = HabitViewController()
     habitViewController.enteredEventName = trackerToEdit.title
