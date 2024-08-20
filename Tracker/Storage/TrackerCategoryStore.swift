@@ -91,12 +91,48 @@ extension TrackerCategoryStore {
           }
       }
       existingCategory.trackers = NSSet(array: existingTrackers)
-    do {
-        try context.save()
-    } catch {
-        print("Failed to save context: \(error)")
-    }
+      do {
+          try context.save()
+      } catch {
+          print("Failed to save context: \(error)")
+      }
+  }
 
+  func saveOriginalCategory(tracker: Tracker, originalCategory: String) {
+      guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+      let managedContext = appDelegate.persistentContainer.viewContext
+
+      let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+      fetchRequest.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+
+      do {
+          let trackers = try managedContext.fetch(fetchRequest)
+          if let trackerCoreData = trackers.first {
+              trackerCoreData.trackerCategory = originalCategory
+              try managedContext.save()
+          }
+      } catch {
+          print("Ошибка сохранения исходной категории трекера: \(error)")
+      }
+  }
+
+  func getOriginalCategory(tracker: Tracker) -> String {
+      guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return "" }
+      let managedContext = appDelegate.persistentContainer.viewContext
+
+      let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+      fetchRequest.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+
+      do {
+          let trackers = try managedContext.fetch(fetchRequest)
+          if let trackerCoreData = trackers.first {
+              return trackerCoreData.trackerCategory ?? ""
+          }
+      } catch {
+          print("Ошибка получения исходной категории трекера: \(error)")
+      }
+
+      return ""
   }
 
 
