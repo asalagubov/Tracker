@@ -168,7 +168,6 @@ class TrackerViewController: UIViewController {
   }
 
   private func setupTrackerView() {
-    analyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
     let plusButton = UIBarButtonItem(image: UIImage(named: "plus_button"), style: .plain, target: self, action: #selector(plusButtonTapped))
     plusButton.tintColor = .ypBlack
     navigationItem.leftBarButtonItem = plusButton

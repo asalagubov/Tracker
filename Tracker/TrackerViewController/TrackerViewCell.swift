@@ -14,7 +14,9 @@ protocol TrackerDoneDelegate: AnyObject {
 }
 
 final class TrackerViewCell: UICollectionViewCell {
-  
+
+  private let analyticsService = AnalyticsService()
+
   lazy var bodyView: UIView = {
     let bodyView = UIView()
     bodyView.layer.cornerRadius = 16
@@ -94,6 +96,7 @@ final class TrackerViewCell: UICollectionViewCell {
   }
   
   @objc private func trackerDoneTapped() {
+    analyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
     guard let trackerID = trackerID,
           let indexPath = indexPath else {
       assertionFailure("no trackerID")
