@@ -165,8 +165,8 @@
 		0C0BC0A92C4FB51C00B3B7D0 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				0C0BC0AA2C4FB53600B3B7D0 /* TrackerStore.swift */,
 				0C0BC0AC2C4FB54000B3B7D0 /* TrackerCategoryStore.swift */,
+				0C0BC0AA2C4FB53600B3B7D0 /* TrackerStore.swift */,
 				0C0BC0AE2C4FB55000B3B7D0 /* TrackerRecordStore.swift */,
 				0C5FDBD22C53F12600C61AED /* UIColorMarshalling.swift */,
 				0C5FDBD42C53F5BE00C61AED /* WeekdayArrayTransformer.swift */,

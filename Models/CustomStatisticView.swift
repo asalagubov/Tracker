@@ -52,7 +52,7 @@ final class CustomStatisticView: UIView {
   }
   
   
-  private func setupView() {
+  func setupView() {
     layer.cornerRadius = 15
     addGradienBorder(colors: [.red, .green, .blue])
     containerView.addSubviews(titleLabel, subLabel)

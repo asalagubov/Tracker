@@ -23,18 +23,24 @@ final class TrackerStore {
   }
   
   func addNewTracker(from tracker: Tracker) -> TrackerCoreData? {
-    guard let trackerCoreData = NSEntityDescription.entity(forEntityName: "TrackerCoreData", in: context) else { return nil }
-    let newTracker = TrackerCoreData(entity: trackerCoreData, insertInto: context)
-    newTracker.id = tracker.id
-    newTracker.title = tracker.title
-    newTracker.color = UIColorMarshalling.hexString(from: tracker.color)
-    newTracker.emoji = tracker.emoji
-    newTracker.schedule = tracker.schedule as NSArray?
-    newTracker.trackerCategory = tracker.trackerCategory
-    
-    return newTracker
+      guard let trackerCoreData = NSEntityDescription.entity(forEntityName: "TrackerCoreData", in: context) else { return nil }
+      let newTracker = TrackerCoreData(entity: trackerCoreData, insertInto: context)
+      newTracker.id = tracker.id
+      newTracker.title = tracker.title
+      newTracker.color = UIColorMarshalling.hexString(from: tracker.color)
+      newTracker.emoji = tracker.emoji
+      newTracker.schedule = tracker.schedule as NSArray?
+      newTracker.trackerCategory = tracker.trackerCategory
+
+      do {
+          try context.save()
+      } catch {
+          print("Ошибка сохранения трекера: \(error)")
+      }
+
+      return newTracker
   }
-  
+
   func fetchTracker() -> [Tracker] {
     let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
     do {
