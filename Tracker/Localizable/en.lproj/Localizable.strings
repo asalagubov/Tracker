@@ -21,6 +21,7 @@
 //Action Sheet
 "cancelButton" = "Cancel";
 "addButton" = "Сreate";
+"editButton" = "Edit";
 
 //Holders
 "trackersHolderLabel" = "What will we track?";

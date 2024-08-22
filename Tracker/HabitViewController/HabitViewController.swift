@@ -37,8 +37,7 @@ class HabitViewController: UIViewController {
   var trackerVC = TrackerViewController()
   
   var trackerToEdit: Tracker?
-  
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     if let trackerToEdit = trackerToEdit {
@@ -46,8 +45,11 @@ class HabitViewController: UIViewController {
       selectedColor = trackerToEdit.color
       selectedEmoji = trackerToEdit.emoji
       selectedSchedule = trackerToEdit.schedule
+      selectedCategory = TrackerCategory(title: trackerToEdit.trackerCategory, trackers: [])
+      title = "Редактирование привычки"
+    } else {
+      title = "Новая привычка"
     }
-    title = "Новая привычка"
     backGround()
     setupScrollView()
     setupHabitView()
@@ -119,7 +121,9 @@ class HabitViewController: UIViewController {
   }
   
   private func setupCreateButton() {
-    createButton.setTitle(localizedString(key:"addButton"), for: .normal)
+    createButton.setTitle(
+      trackerToEdit == nil ? localizedString(key:"addButton") : localizedString(key: "editButton"), for: .normal
+    )
     createButton.layer.cornerRadius = 16
     createButton.layer.masksToBounds = true
     createButton.backgroundColor = .ypGray

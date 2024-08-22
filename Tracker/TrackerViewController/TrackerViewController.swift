@@ -15,7 +15,11 @@ protocol ReloadCollectionProtocol: AnyObject {
 class TrackerViewController: UIViewController {
 
   var completedTrackers: [TrackerRecorder] = []
-  var visibleCategory: [TrackerCategory] = []
+  var visibleCategory: [TrackerCategory] = [] {
+    didSet {
+      print("Yes")
+    }
+  }
   var categories: [TrackerCategory] = []
   var weekdayFilter: Weekday?
 
@@ -69,23 +73,6 @@ class TrackerViewController: UIViewController {
     analyticsService.report(event: "close", params: ["screen": "Main"])
   }
 
-  func updateTracker(tracker: Tracker) {
-    let updatedVisibleCategory = visibleCategory.map { category in
-      if category.trackers.contains(where: { $0.id == tracker.id }) {
-        let updatedTrackers = category.trackers.map { $0.id == tracker.id ? tracker : $0 }
-        return TrackerCategory(title: category.title, trackers: updatedTrackers)
-      } else {
-        return category
-      }
-    }
-
-    visibleCategory = updatedVisibleCategory
-
-    trackerStore.updateTracker(tracker: tracker)
-
-    collectionView.reloadData()
-  }
-
   private func loadTrackersFromCoreData() {
     let storedTrackers = trackerStore.fetchTracker()
     let storedCategories = trackerCategoryStore.fetchAllCategories()
@@ -101,8 +88,6 @@ class TrackerViewController: UIViewController {
         categories.append(newCategory)
       }
     }
-
-
 
     visibleCategory = getVisibleCategories(from: categories)
     showTrackersInDate(currentDate)
@@ -126,10 +111,10 @@ class TrackerViewController: UIViewController {
       filteredCategories = filteredCategories.map { category in
         let filteredTrackers = category.trackers.filter { $0.schedule.contains(weekdayFilter) }
         return TrackerCategory(title: category.title, trackers: filteredTrackers)
-      }.filter { !$0.trackers.isEmpty }
+      }
     }
 
-    return filteredCategories
+    return filteredCategories.filter { !$0.trackers.isEmpty }
   }
 
 
@@ -403,6 +388,42 @@ class TrackerViewController: UIViewController {
     collectionView.reloadData()
   }
 
+  func updateTracker(tracker: Tracker) {
+    guard 
+      let indexOfUpdatedCategory = categories.firstIndex(where: { $0.trackers.contains(tracker) }),
+      let indexOfUpdatedTracker = categories[indexOfUpdatedCategory].trackers.firstIndex(of: tracker)
+    else { return }
+
+    if tracker.trackerCategory == categories[indexOfUpdatedCategory].title {
+      var updatedTrackers = categories[indexOfUpdatedCategory].trackers
+      updatedTrackers[indexOfUpdatedTracker] = tracker
+      let updatedCategory = TrackerCategory(title: categories[indexOfUpdatedCategory].title, trackers: updatedTrackers)
+      categories[indexOfUpdatedCategory] = updatedCategory
+
+      trackerStore.updateTracker(tracker: tracker)
+      trackerCategoryStore.deleteTrackerFromCategory(tracker: tracker, with: updatedCategory.title)
+      trackerCategoryStore.addTrackerToCategory(tracker: tracker, with: updatedCategory.title)
+    } else {
+      let updatedTrackers = categories[indexOfUpdatedCategory].trackers.filter({ $0.id != tracker.id })
+      let updatedCategory = TrackerCategory(title: categories[indexOfUpdatedCategory].title, trackers: updatedTrackers)
+      categories[indexOfUpdatedCategory] = updatedCategory
+
+      trackerStore.updateTracker(tracker: tracker)
+      trackerCategoryStore.deleteTrackerFromCategory(tracker: tracker, with: updatedCategory.title)
+
+      if let newCategoryIndex = categories.firstIndex(where: { $0.title == tracker.trackerCategory }) {
+        categories[newCategoryIndex] = TrackerCategory(title: categories[newCategoryIndex].title, trackers: categories[newCategoryIndex].trackers + [tracker])
+        trackerCategoryStore.addTrackerToCategory(tracker: tracker, with: categories[newCategoryIndex].title)
+      } else {
+        let newCategory = TrackerCategory(title: tracker.trackerCategory, trackers: [tracker])
+        categories.append(newCategory)
+        trackerCategoryStore.addTrackerToCategory(tracker: tracker, with: tracker.trackerCategory)
+      }
+    }
+
+    visibleCategory = getVisibleCategories(from: categories)
+    collectionView.reloadData()
+  }
 
 
   func createNewCategory(_ category: TrackerCategory) {
@@ -422,18 +443,14 @@ class TrackerViewController: UIViewController {
     guard !categories.isEmpty else {
       return true
     }
-    return categories[0].trackers.isEmpty
+    return !categories.contains(where: { !$0.trackers.isEmpty })
   }
 
   func checkIsVisibleEmpty() -> Bool {
     if visibleCategory.isEmpty {
       return true
     }
-    if visibleCategory[0].trackers.isEmpty {
-      return true
-    } else {
-      return false
-    }
+    return !visibleCategory.contains(where: { !$0.trackers.isEmpty })
   }
 
   func getTrackerDetails(section: Int, item: Int) -> Tracker {
@@ -453,12 +470,8 @@ extension TrackerViewController: UICollectionViewDataSource {
   }
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    let category = visibleCategory[section]
-    if category.title == "Закрепленные" {
-      return category.trackers.count
-    } else {
-      return category.trackers.count
-    }
+    let itemsCount = visibleCategory[section].trackers.count
+    return itemsCount
   }
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

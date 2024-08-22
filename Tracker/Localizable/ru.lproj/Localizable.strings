@@ -20,6 +20,7 @@
 //Action Sheet
 "cancelButton" = "Отменить";
 "addButton" = "Cоздать";
+"editButton" = "Редактировать";
 
 //Holders
 "trackersHolderLabel" = "Что будем отслеживать?";
