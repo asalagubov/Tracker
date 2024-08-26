@@ -16,6 +16,36 @@ enum Weekday: String {
   case friday = "Пт"
   case saturday = "Cб"
   case sunday = "Вск"
+
+  init(from date: Date) {
+    switch date.dayNumberOfWeek() {
+    case 1:
+      self = .sunday
+    case 2:
+      self = .monday
+    case 3:
+      self = .tuesday
+    case 4:
+      self = .wednesday
+    case 5:
+      self = .thursday
+    case 6:
+      self = .friday
+    case 7:
+      self = .saturday
+    default:
+      fatalError()
+    }
+  }
+
+
+
+}
+
+extension Date {
+  func dayNumberOfWeek() -> Int? {
+    return Calendar.current.dateComponents([.weekday], from: self).weekday
+  }
 }
 
 protocol SelectedScheduleDelegate: AnyObject {
